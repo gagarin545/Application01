@@ -25,13 +25,6 @@ public class WorkerTest {
             Assert.assertTrue(worker.isSuccessful());
             Workers body = worker.body();
             Assert.assertNotNull(body);
-            if( body != null)
-                if( body.getIddivision() != null) {
-                    Call<List<Incident>> incident = api.getworkerincident(body.getImei());
-                    Response<List<Incident>> inc = incident.execute();
-                    List<Incident> incidents = inc.body();
-                    System.out.println( body.getName() + ' ' + body.getImei() + ' ' +incidents.size() );
-                }
 
         } catch (IOException e1) {
             Call<List<Division>> division = api.getDivision();
