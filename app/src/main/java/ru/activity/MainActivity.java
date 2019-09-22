@@ -15,9 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import com.example.application01.R;
-
 import ru.service.MyService;
 import ru.util.CallCommand;
 import ru.util.Commands;
@@ -46,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bt2.setOnClickListener(this);
         Button bt7 = (Button) findViewById(R.id.BT7); // определение кнопки настройки
         bt7.setOnClickListener(this);
-        Button bRest = (Button) findViewById(R.id.Rest); // определение кнопки test
+        Button bRest = (Button) findViewById(R.id.Rest); // определение кнопки Rest
         bRest.setOnClickListener(this);
         Imei = getImei();
 

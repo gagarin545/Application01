@@ -2,17 +2,14 @@ package ru.util;
 
 import android.content.Context;
 import android.util.Log;
-
 import com.example.application01.R;
-
 import ru.service.getDivision;
-
 import static ru.Api.Constants.Debug;
 import static ru.activity.MainActivity.et1;
 
 public class Commands {
-    Context context;
-    String Imei;
+    private Context context;
+    private String Imei;
     public Commands(Context ctx) {
         super();
         this.context = ctx;
