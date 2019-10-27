@@ -6,27 +6,26 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public class Division implements Parcelable{
-    @SerializedName("iddevision")
-    private int iddevision;
-    @SerializedName("namedevision")
-    private String namedevision;
+    @SerializedName("iddivision")
+    private int iddivision;
+    @SerializedName("namedivision")
+    private String namedivision;
     @SerializedName("idcity")
     private int idcity;
 
     public static Parcelable.Creator<Division> getCREATOR() {        return CREATOR;    }
 
     private Division(Parcel in) {
-        iddevision = in.readInt();
-        namedevision = in.readString();
+        iddivision = in.readInt();
+        namedivision = in.readString();
         idcity = in.readInt();
     }
 
-    public int getIddevision() {        return iddevision;    }
-    public void setIddevision(int iddevision) {        this.iddevision = iddevision;    }
-    public String getNamedevision() {        return namedevision;    }
-    public void setNamedevision(String namedevision) {        this.namedevision = namedevision;    }
-    public int getIdcity() {        return idcity;    }
-    public void setIdcity(int idcity) {        this.idcity = idcity;    }
+    public int getIddivision() {        return iddivision;    }
+    public void setIddivision(int iddivision) {        this.iddivision = iddivision;    }
+    public String getNamedivision() {        return namedivision;    }
+    public void setNamedivision(String namedivision) {        this.namedivision = namedivision;    }
+    public int getIdcity() {        return idcity;    }    public void setIdcity(int idcity) {        this.idcity = idcity;    }
 
     private static final Parcelable.Creator<Division> CREATOR = new Parcelable.Creator<Division>() {
         @Override
@@ -42,8 +41,8 @@ public class Division implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong( iddevision);
-        dest.writeString( namedevision);
+        dest.writeInt( iddivision);
+        dest.writeString( namedivision);
         dest.writeInt( idcity);
     }
 }

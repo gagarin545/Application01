@@ -10,13 +10,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-
 import com.example.application01.R;
-
 import java.util.ArrayList;
-
-import ru.service.setDivision;
-
+import ru.service.SetDivision;
 import static ru.Api.Constants.Debug;
 
 public class DivisionsActivity extends AppCompatActivity implements View.OnClickListener{
@@ -27,10 +23,11 @@ public class DivisionsActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_divisions);
         String[] division = getIntent().getStringArrayExtra("word");
-        ListView choiceList = (ListView) findViewById(R.id.listView1);
+        int [] division_poz =  getIntent().getIntArrayExtra("poz");
+        ListView choiceList = findViewById(R.id.listView2);
         findViewById(R.id.dbutton1).setOnClickListener(this);
         findViewById(R.id.dbutton2).setOnClickListener(this);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, division);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.list_item, division);
         choiceList.setAdapter(adapter);
 
         choiceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -40,14 +37,14 @@ public class DivisionsActivity extends AppCompatActivity implements View.OnClick
             public void onItemClick (AdapterView < ? > parent, View v, int position, long id){
                 boolean status = true;
                 for( int i = 0 ; i < iddivision.size(); i++)
-                    if (position == iddivision.get(i)) {
+                    if (division_poz[position] == iddivision.get(i)) {
                         iddivision.remove(i);
                         status = false;
                     }
                 if( status)
-                    iddivision.add(position);
+                    iddivision.add(division_poz[position]);
 
-                iddivision.forEach( di -> Log.e(Debug ,">>" + String.valueOf(di)));
+                iddivision.forEach( di -> Log.e(Debug ,">>" + di));
             }
         });
     }
@@ -63,7 +60,7 @@ public class DivisionsActivity extends AppCompatActivity implements View.OnClick
             case R.id.dbutton1:
                 Log.e(Debug, String.valueOf(v.getId()));
                 EditText et = findViewById(R.id.Names);
-                setDivision setdivision = new setDivision( iddivision, et.getText().toString() );
+                SetDivision setdivision = new SetDivision( iddivision, et.getText().toString() );
                 setdivision.setdivision();
                 onStop();
                 break;

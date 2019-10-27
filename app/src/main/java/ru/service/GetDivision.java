@@ -16,9 +16,9 @@ import ru.entity.Division;
 
 import static ru.Api.Constants.Debug;
 import static ru.Api.Constants.api;
-public class getDivision {
-    Context context;
-    public getDivision(Context context) {
+public class GetDivision {
+    private Context context;
+    public GetDivision(Context context) {
         this.context = context;
     }
     public void getdivision() {
@@ -29,11 +29,15 @@ public class getDivision {
                 if (response.isSuccessful()) {
                     List<Division> divisions = response.body();
                     String[] div = new String[divisions.size()];
-                    for (int i = 0; i < divisions.size(); i++)
-                        div[i] = divisions.get(i).getNamedevision();
-                    Log.e(Debug, "div=" + String.valueOf(div.length) + div[div.length - 1]);
+                    int[] division_poz =  new int[divisions.size()];
+                    for (int i = 0; i < divisions.size(); i++) {
+                        div[i] = divisions.get(i).getNamedivision();
+                        division_poz[i] = divisions.get(i).getIddivision();
+                    }
+                    Log.e(Debug, "div=" + div.length + div[div.length - 1]);
                     Intent intent = new Intent(context, DivisionsActivity.class);
                     intent.putExtra("word", div);
+                    intent.putExtra("poz", division_poz);
                     context.startActivity(intent);
                 } else {
                     Log.e(Debug, "error " + response.code());

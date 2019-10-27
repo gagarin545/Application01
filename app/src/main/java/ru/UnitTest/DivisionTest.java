@@ -33,7 +33,7 @@ public class DivisionTest {
             Assert.assertNotNull(body);
 
             for( Division devision: body)
-                System.out.println(devision.getNamedevision() + " " + devision.getIddevision());
+                System.out.println(devision.getNamedivision() + " " + devision.getIddivision());
 
         } catch (IOException e) {
             e.printStackTrace();

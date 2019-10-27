@@ -5,14 +5,19 @@ import android.util.Log;
 
 import com.example.application01.R;
 
-import ru.service.getDivision;
+import java.util.List;
+
+import ru.entity.Incident;
+import ru.service.GetDivision;
+import ru.service.GetIncidents;
+import ru.service.GetWorkers;
 
 import static ru.Api.Constants.Debug;
-import static ru.activity.MainActivity.et1;
 
 public class Commands {
-    Context context;
-    String Imei;
+    private Context context;
+    private String Imei;
+    List<Incident> incidents;
     public Commands(Context ctx) {
         super();
         this.context = ctx;
@@ -22,20 +27,33 @@ public class Commands {
         this.Imei = Imei;
         this.context = ctx;
     }
-    void commit(int i) {
+    List<Incident> commit(int i) {
         Log.e( Debug, "commit");
         switch (i){
             case R.id.BT1:
-                Log.e(Debug, "Послать" + et1.getText());
+                Log.e(Debug, "Сегодня" );
+                GetWorkers worker = new GetWorkers( context, Imei);
+                Thread t = new Thread(worker);
+                t.start();
+                while(t.isAlive()) {}
+                GetIncidents getIncidents = new GetIncidents(worker.getwork().getIddivision());
+                t = new Thread( getIncidents);
+                t.start();
+                while(t.isAlive()) {}
+                incidents = getIncidents.getIncident();
+
+             //   System.out.println(workers.getName());
+                Log.e(Debug, String.valueOf(incidents.size()));
                 break;
             case R.id.BT2:
-                Log.e(Debug, "Тестировать" + et1.getText());
+                Log.e(Debug, "On week" );
                 break;
-            case R.id.BT7:
-                Log.e(Debug, "Bt7");
-                new getDivision( context).getdivision();
+            case R.id.BT3:
+                Log.e(Debug, "Setting" );
+                new GetDivision( context).getdivision();
                 break;
-        }
 
+        }
+        return incidents;
     }
 }

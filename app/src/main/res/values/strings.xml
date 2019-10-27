@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">ПАО Ростелеком(v.6.3)-%1$s</string>
-    <string name="test">Тест</string>
+    <string name="test">За неделю</string>
     <string name="his">Настройки</string>
-    <string name="Send">Послать</string>
+    <string name="Send">Сегодня</string>
     <string name="Repet">Повторить</string>
     <string name="Ok">Принять в работу</string>
     <string name="change">Изменить профиль</string>

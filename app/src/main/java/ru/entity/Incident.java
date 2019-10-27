@@ -5,14 +5,14 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.sql.Timestamp;
+import ru.adapter.MyAdapterIncident;
 
 public class Incident implements Parcelable {
-    @SerializedName("typeIncident") //Тип инцидента
+    @SerializedName("typeincident") //Тип инцидента
     private int typeincident;
-    public int getTypeincident() {        return typeincident;    }
+    public String getTypeincident() {        return typeincident == 0 ? "Л-":"ШПД-";    }
     public void setTypeincident(int typeincident) {        this.typeincident = typeincident;    }
-    @SerializedName("nIncident")    //№ инцидента
+    @SerializedName("n_incident")    //№ инцидента
     private long n_incident;
     public long getN_incident() {        return n_incident;    }
     public void setN_incident(long n_incident) {        this.n_incident = n_incident;    }
@@ -28,22 +28,22 @@ public class Incident implements Parcelable {
     private String declared;
     public String getDeclared() { return declared;    }
     public void setDeclared(String declared) {        this.declared = declared;    }
-    @SerializedName("controlTerm")  // Контрольное время
-    private String controlterm;
-    public String getControlterm() {        return controlterm;    }
-    public void setControlterm(String controlterm) {        this.controlterm = controlterm;    }
-    @SerializedName("controlTermSla")  // Контрольное время Sla
+    @SerializedName("controlterm")  // Контрольное время
+    private long controlterm;
+    public long getControlterm() {        return controlterm;    }
+    public void setControlterm(long controlterm) {        this.controlterm = controlterm;    }
+    @SerializedName("controltermsla")  // Контрольное время Sla
     private String controltermsla;
     public String getControltermsla() {        return controltermsla; }
     public void setControltermsla(String controltermsla) {        this.controltermsla = controltermsla; }
-    @SerializedName("controlTermTask")  // Контрольное время Задачи
+    @SerializedName("controltermtask")  // Контрольное время Задачи
     private String controltermtask;
     public String getControltermtask() {        return controltermtask;    }
     public void setControltermtask(String controltermtask) {        this.controltermtask = controltermtask;    }
-    @SerializedName( "createTime")    // Время создания наряда
-    private Timestamp createtime;
-    public Timestamp getCreatetime() {        return createtime;    }
-    public void setCreatetime(Timestamp createtime) {        this.createtime = createtime;    }
+    @SerializedName( "createtime")    // Время создания наряда
+    private long createtime;
+    public long getCreatetime() {        return createtime;    }
+    public void setCreatetime(long createtime) {        this.createtime = createtime;    }
     @SerializedName("clazz") // Кл.
     private String clazz;
     public String getClazz() {        return clazz; }
@@ -56,15 +56,15 @@ public class Incident implements Parcelable {
     private int yield;
     public int getYield() {        return yield;    }
     public void setYield(int yield) {        this.yield = yield;    }
-    @SerializedName("decisionTime") // Время Визита
-    private Timestamp decisiontime;
-    public Timestamp getDecisiontime() {        return decisiontime;    }
-    public void setDecisiontime(Timestamp decisiontime) {        this.decisiontime = decisiontime;    }
-    @SerializedName("nameClient") // Клиент
+    @SerializedName("decisiontime") // Время Визита
+    private long decisiontime;
+    public long getDecisiontime() {        return decisiontime;    }
+    public void setDecisiontime(long decisiontime) {        this.decisiontime = decisiontime;    }
+    @SerializedName("nameclient") // Клиент
     private String nameclient;
     public String getNameclient() {        return nameclient;    }
     public void setNameclient(String nameclient) {        this.nameclient = nameclient;    }
-    @SerializedName("labelOfService") // Уровень обслуживания
+    @SerializedName("labelofservice") // Уровень обслуживания
     private int labelofservice;
     public int getLabelofservice() {        return labelofservice;    }
     public void setLabelofservice(int labelofservice) {        this.labelofservice = labelofservice;    }
@@ -80,7 +80,7 @@ public class Incident implements Parcelable {
     private long phone;
     public long getPhone() {        return phone;    }
     public void setPhone(long phone) {        this.phone = phone;    }
-    @SerializedName( "techData") // Тех. данные
+    @SerializedName( "techdata") // Тех. данные
     private String techdata;
     public String getTechdata() {        return techdata;    }
     public void setTechdata(String techdata) {        this.techdata = techdata;     }
@@ -89,9 +89,9 @@ public class Incident implements Parcelable {
     public String getComment() {        return comment;    }
     public void setComment(String comment) {        this.comment = comment;    }
     @SerializedName( "timeclose")    // Время закрытия
-    private Timestamp timeclose;
-    public Timestamp getTimeclose() {        return timeclose;    }
-    public void setTimeclose(Timestamp timeclose) {        this.timeclose = timeclose;    }
+    private long timeclose;
+    public long getTimeclose() {        return timeclose;    }
+    public void setTimeclose(long timeclose) {        this.timeclose = timeclose;    }
     @SerializedName("workersEntity")
     private Workers worker; //Работник
     public Workers getWorker() {        return worker;    }
@@ -104,6 +104,7 @@ public class Incident implements Parcelable {
     private Technology technogy ;
     public Technology getTechnogy() {        return technogy; }
     public void setTechnogy(Technology technogy) {        this.technogy = technogy;    }
+
 
     public Incident(int typeincident) {}
     public static final Creator<Incident> CREATOR = new Creator<Incident>() {
@@ -120,14 +121,14 @@ public class Incident implements Parcelable {
         idcity = in.readInt();
         service = in.readLong();
         declared = in.readString();
-        controlterm = in.readString();
+        controlterm = in.readLong();
         controltermsla = in.readString();
         controltermtask = in.readString();
-        createtime = Timestamp.valueOf(in.readString());
+        createtime = in.readLong();
         clazz = in.readString();
         repet = in.readInt();
         yield = in.readInt();
-        decisiontime = Timestamp.valueOf(in.readString());
+        decisiontime = in.readLong();
         nameclient = in.readString();
         labelofservice = in.readInt();
         address = in.readString();
@@ -135,7 +136,7 @@ public class Incident implements Parcelable {
         phone = in.readLong();
         techdata = in.readString();
         comment = in.readString();
-        timeclose = Timestamp.valueOf(in.readString());
+        timeclose = in.readLong();
         worker = in.readParcelable(Workers.class.getClassLoader());
         division = in.readParcelable(Division.class.getClassLoader());
         technogy = in.readParcelable(Technology.class.getClassLoader());
@@ -149,12 +150,13 @@ public class Incident implements Parcelable {
         dest.writeInt(idcity);
         dest.writeLong(service);
         dest.writeString(declared);
-        dest.writeString(controlterm);
+        dest.writeLong(controlterm);
         dest.writeString(controltermsla);
         dest.writeString(controltermtask);
         dest.writeString(clazz);
         dest.writeInt(repet);
         dest.writeInt(yield);
+        dest.writeLong(decisiontime);
         dest.writeString(nameclient);
         dest.writeInt(labelofservice);
         dest.writeString(address);
@@ -162,8 +164,40 @@ public class Incident implements Parcelable {
         dest.writeLong(phone);
         dest.writeString(techdata);
         dest.writeString(comment);
+        dest.writeLong(createtime);
+        dest.writeLong(timeclose);
         dest.writeParcelable(worker, flags);
         dest.writeParcelable(division, flags);
         dest.writeParcelable(technogy, flags);
+    }
+
+    String color= "<font COLOR='#33B5E5'><b>";
+    @Override
+    public String toString() {
+        String term = null;
+        if(controlterm != 0) {
+            int hours = (int)((getControlterm() - MyAdapterIncident.time.getTime()) / 3600000L);
+            int min = (int) (((getControlterm() - MyAdapterIncident.time.getTime()) - (long) (hours) * 3600000L) / 60000);
+            if(hours > 0 && min > 0 )
+                term = "<font COLOR='#FF8C00'><b>" +Math.abs(hours) + " ч. " + Math.abs(min) + " мин.</b></font>";
+            else
+                term = "<font COLOR='#FF0000'><b>" +Math.abs(hours) + " ч. " + Math.abs(min) + " мин.</b></font>";
+        }
+        return  "<font COLOR='#33B5E5'><b>Логин: </b></font>" + service + "<br>" +
+                "<font COLOR='#33B5E5'><b>Заявлено: </b></font>" + declared  + "<br>" +
+                "<font COLOR='#33B5E5'><b>КС: </b></font>" + term + "<br>" +
+                "<font COLOR='#33B5E5'><b>КС (sla): </b></font>" + controltermsla + "<br>" +
+                "<font COLOR='#33B5E5'><b>КС задачи: </b></font>" + controltermtask + "<br>" +
+                "<font COLOR='#33B5E5'><b>Кл.: </b></font>" + clazz + "<br>" +
+                "<font COLOR='#33B5E5'><b>Повтор: </b></font>" + repet + "<br>" +
+                "<font COLOR='#33B5E5'><b>Доходность: </b></font>" + yield + "<br>" +
+                "<font COLOR='#33B5E5'><b>Интервал: </b></font>" + decisiontime + "<br>" +
+                "<font COLOR='#33B5E5'><b>Имя: </b></font>" + nameclient + "<br>" +
+                "<font COLOR='#33B5E5'><b>Уровень облуживания: </b></font>" + labelofservice + "<br>" +
+                "<font COLOR='#33B5E5'><b>Адрес: </b></font>" + address + " " + room + "<br>" +
+                "<font COLOR='#33B5E5'><b>Телефон: </b></font>" + phone + "<br>" +
+                "<font COLOR='#33B5E5'><b>Тех.данные: </b></font>" + techdata + "<br>" +
+                "<font COLOR='#33B5E5'><b>Комментарии: </b></font>" + comment + "<br>" +
+                "<font COLOR='#33B5E5'><b>Назначен: </b></font>" + worker.getName();
     }
 }

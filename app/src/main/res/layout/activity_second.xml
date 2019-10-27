@@ -1,51 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:id="@+id/layout"
     tools:context="ru.activity.SecondActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="3"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/apply"
-            tools:ignore="ButtonStyle,NestedWeights" />
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/dump"
-            tools:ignore="ButtonStyle" />
-
-    </LinearLayout>
-
-    <EditText
-        android:id="@+id/Names"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="3"
-        android:autofillHints=""
-        android:inputType=""
-        tools:ignore="LabelFor,MissingConstraints,NotSibling,UnusedAttribute" />
-
-    <ListView
-        android:id="@+id/listView1"
-        android:layout_weight="1"
+    <ScrollView
+        android:id="@+id/sv2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:choiceMode="multipleChoice"
-        tools:ignore="MissingConstraints" />
-</LinearLayout>
+        tools:ignore="UselessParent">
+
+        <TextView
+            android:id="@+id/TV1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:scrollbars="horizontal"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+    </ScrollView>
+
+</LinearLayout >
 

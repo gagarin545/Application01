@@ -2,23 +2,20 @@ package ru.service;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import ru.entity.Workers;
-
 import static ru.Api.Constants.Debug;
 import static ru.Api.Constants.Imei;
 import static ru.Api.Constants.api;
 
-public class setDivision {
+public class SetDivision {
     private ArrayList<Integer> division;
     private String name;
-    public setDivision( ArrayList<Integer> division, String name){
+    public SetDivision( ArrayList<Integer> division, String name){
          this.division = division;
          this.name = name;
     }
