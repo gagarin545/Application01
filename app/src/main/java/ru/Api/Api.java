@@ -11,6 +11,7 @@ import retrofit2.http.Path;
 import ru.entity.Division;
 import ru.entity.Incident;
 import ru.entity.Result;
+import ru.entity.WorkerResult;
 import ru.entity.Workers;
 
 /**
@@ -22,13 +23,9 @@ public interface Api {
     @FormUrlEncoded
     @POST("/Workers/imei")   Call<Workers> getWorkerId(@Field("imei") String imei);
     @FormUrlEncoded
-    @POST("/Worker/add")  Call<Workers> addWorker(  @Field("name") String name, @Field("imei") String imei, @Field("iddivision") String iddivision);
+    @POST("/Workers/add")  Call<Workers> addWorker(  @Field("name") String name, @Field("imei") String imei, @Field("iddivision") String iddivision);
     @GET("Incident/{iddivision}")   Call<List<Incident>> getIncident(@Path("iddivision") String iddivision  );
-
     @GET("Incident/burn/{iddivision}")   Call<List<Incident>> incidentListBurn(@Path("iddivision") String iddivision  );
     @GET("Result/{iddivision}")   Call<List<Result>> resultList(@Path("iddivision") String iddivision  );
-
-    @GET("Incidentin4hour/{iddivision}")   Call<List<Incident>> getIncidentIn4Hour(@Path("iddivision") String iddivision  );
-    @GET("/IncidentBurning/{iddivision}")   Call<List<Incident>> getIncident1Burning(@Path("iddivision") String iddivision  );
-
+    @GET("WorkerResult/{iddivision}")   Call<List<WorkerResult>> workerResultList(@Path("iddivision") String iddivision  );
 }

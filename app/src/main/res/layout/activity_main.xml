@@ -14,29 +14,45 @@
         android:layout_weight="0"
         android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/BT1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/Send"
-        tools:ignore="ButtonStyle" />
+        <Button
+            android:id="@+id/BT1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Send"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            tools:ignore="ButtonStyle" />
 
-    <Button
-        android:id="@+id/BT2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/test"
-        tools:ignore="ButtonStyle" />
+        <Button
+            android:id="@+id/BT2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/test"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            tools:ignore="ButtonStyle" />
 
-    <Button
-        android:id="@+id/BT3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/his"
-        tools:ignore="ButtonStyle" />
+        <Button
+            android:id="@+id/BT3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/work"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/BT4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/his"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            tools:ignore="ButtonStyle" />
     </LinearLayout>
 
     <ListView

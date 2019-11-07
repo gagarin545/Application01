@@ -4,13 +4,11 @@ import android.annotation.SuppressLint;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Response;
 import ru.Api.Api;

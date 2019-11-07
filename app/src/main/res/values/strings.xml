@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ПАО Ростелеком(v.6.3)-%1$s</string>
-    <string name="test">За неделю</string>
+    <string name="test">Наряды</string>
+    <string name="work">Работник</string>
     <string name="his">Настройки</string>
     <string name="Send">Сегодня</string>
     <string name="Repet">Повторить</string>

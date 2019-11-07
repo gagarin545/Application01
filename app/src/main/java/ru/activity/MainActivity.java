@@ -17,45 +17,56 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.application01.R;
+import com.github.mikephil.charting.data.BarData;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import ru.adapter.ChartDataAdapter;
 import ru.adapter.MyAdapterIncident;
 import ru.entity.Incident;
+import ru.entity.Result;
+import ru.entity.WorkerResult;
 import ru.service.GetDivision;
 import ru.service.GetIncidents;
+import ru.service.GetResult;
+import ru.service.GetWorkerResult;
 import ru.service.GetWorkers;
-import ru.util.Control;
+import ru.util.GenerateData;
 
 import static ru.Api.Constants.Debug;
-
+import static ru.Api.Constants.Imei;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-    Control control;
     Thread thread;
-    GetWorkers worker;
+    ChartDataAdapter chartDataAdapter;
     ListView lv;
+    BarData date;
+    GetWorkers worker;
+    List<Result> res;
     List <Incident> incidents;
     @SuppressLint({"HardwareIds", "HandlerLeak"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // control = new Control( );
+
         lv = findViewById(R.id.listView1);
         findViewById(R.id.BT1).setOnClickListener(this::onClick); // определение кнопки Сегодня
         findViewById(R.id.BT2).setOnClickListener(this::onClick); // определение кнопки Неделю
-        findViewById(R.id.BT3).setOnClickListener(this::onClick); // Настроить
-        worker = new GetWorkers( this, getImei());
+        findViewById(R.id.BT3).setOnClickListener(this::onClick); // Работник за неделю
+        findViewById(R.id.BT4).setOnClickListener(this::onClick); // Настроить
+        Imei = getImei();
+        worker = new GetWorkers( this, Imei);
         thread = new Thread(worker);
         thread.start();
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick (AdapterView < ? > parent, View v, int position, long id){
-                Log.e(Debug, String.valueOf(position));
+      //          Log.e(Debug, String.valueOf(position));
                 Intent intent = new Intent( MainActivity.this, SecondActivity.class);
-                System.out.println(incidents.get(position).toString());
                 intent.putExtra("word", incidents.get(position).toString());
                 startActivity(intent);
             }
@@ -74,12 +85,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     @Override
     public void onClick(View v) {
-        Log.e( Debug, "onclik");
-     //   control.SetCommand(new CallCommand(new Commands(this, Imei)));
-      //  control.press(v.getId());
         switch (v.getId()){
             case R.id.BT1:
-
                 while(thread.isAlive()) {}
                 GetIncidents getIncidents = new GetIncidents(worker.getwork().getIddivision());
                 thread = new Thread( getIncidents);
@@ -92,9 +99,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.e(Debug, String.valueOf(incidents.size()));
                 break;
             case R.id.BT2:
+                ArrayList<BarData> list = new ArrayList<>();
+                GetResult getResult= new GetResult(worker.getwork().getIddivision());
+                thread = new Thread(getResult);
+                thread.start();
+                while(thread.isAlive()) {}
+                res = getResult.getResult();
+                for(int i :worker.getwork().getIddivision())
+                    if((date = new GenerateData().getBarData(res, i)) != null)
+                        list.add( date);
+                chartDataAdapter = new ChartDataAdapter(getApplicationContext(), list);
+                lv.setAdapter(chartDataAdapter);
                 Log.e(Debug, "On week" );
                 break;
             case R.id.BT3:
+                list = new ArrayList<>();
+                Calendar calendar = Calendar.getInstance();
+                GetWorkerResult getWorkerResult = new GetWorkerResult( worker.getwork().getIddivision());
+                thread = new Thread(getWorkerResult);
+                thread.start();
+                while(thread.isAlive()) {}
+                List<WorkerResult> workerResult = getWorkerResult.getWorkerResult();
+                calendar.setTimeInMillis(workerResult.get(0).getTimeclose());
+                for(int i=0; i < 7; i++) {
+                    if ((date = new GenerateData().getBarData(workerResult, calendar.getTimeInMillis())) != null)
+                        list.add(date);
+                    calendar.add(Calendar.DAY_OF_YEAR, 1);
+                }
+                chartDataAdapter = new ChartDataAdapter(getApplicationContext(), list);
+                lv.setAdapter(chartDataAdapter);
+                break;
+            case R.id.BT4:
                 Log.e(Debug, "Setting" );
                 new GetDivision( this).getdivision();
                 break;

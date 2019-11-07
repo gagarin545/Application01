@@ -45,7 +45,7 @@ public class MyAdapterIncident extends ArrayAdapter implements ListAdapter {
             item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + " " + Math.abs(hours) + "ч." + Math.abs(min) + "мин." + " " + incidents.get(position).getClazz() + " " + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom();
         } else
             item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + " " + incidents.get(position).getClazz() + " " + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom();
-        System.out.println(">>>" + hours);
+
         Log.e(Debug, incidents.get(position).getN_incident() + " " + hours + " " + min);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()) .inflate(android.R.layout.simple_list_item_2, null);

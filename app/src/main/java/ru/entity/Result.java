@@ -6,8 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public class Result implements Parcelable {
-    @SerializedName("date")
-    private long dat;
+    @SerializedName("timeclose")
+    private long timeclose;
     @SerializedName("iddivision")
     private int iddivision;
     @SerializedName("kvcount")
@@ -18,7 +18,7 @@ public class Result implements Parcelable {
     private String namedivision;
 
     protected Result(Parcel in) {
-        dat = in.readLong();
+        timeclose = in.readLong();
         iddivision = in.readInt();
         kvcount = in.readInt();
         skvcount = in.readInt();
@@ -32,8 +32,8 @@ public class Result implements Parcelable {
         public Result[] newArray(int size) {            return new Result[size];        }
     };
 
-    public long getDat() {        return dat;    }
-    public void setDat(long dat) {        this.dat = dat;    }
+    public long getTimeclose() {        return timeclose;    }
+    public void setTimeclose(long timeclose) {        this.timeclose = timeclose;    }
     public int getIddivision() {        return iddivision;    }
     public void setIddivision(int iddivision) {        this.iddivision = iddivision;    }
     public int getKvcount() {        return kvcount;    }
@@ -42,9 +42,7 @@ public class Result implements Parcelable {
     public void setSkvcount(int skvcount) {        this.skvcount = skvcount;    }
     public String getNamedivision() {        return namedivision;    }
     public void setNamedivision(String namedivision) {        this.namedivision = namedivision;    }
-
     public Result() {}
-
 
     @Override
     public int describeContents() {
@@ -53,7 +51,7 @@ public class Result implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(dat);
+        dest.writeLong(timeclose);
         dest.writeInt(iddivision);
         dest.writeInt(kvcount);
         dest.writeInt(skvcount);
