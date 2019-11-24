@@ -32,8 +32,8 @@ public class DivisionTest {
             // Проверим, что тело запроса распарсилось нормально
             Assert.assertNotNull(body);
 
-            for( Division devision: body)
-                System.out.println(devision.getNamedivision() + " " + devision.getIddivision());
+         //   for( Division devision: body)
+            //    System.out.println(devision.getNamedivision() + " " + devision.getIddivision());
 
         } catch (IOException e) {
             e.printStackTrace();

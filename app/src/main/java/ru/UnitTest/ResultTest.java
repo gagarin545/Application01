@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,19 +40,19 @@ public class ResultTest {
 
 
 
-            for( int ii: i) {
-                for (Result result : bod) {
-                    if (result.getIddivision() == ii) {
-                        nameDivision = result.getNamedivision();
-                        day.add(String.valueOf(new Date(result.getTimeclose())));
+          //  for( int ii: i) {
+             //   for (Result result : bod) {
+              //      if (result.getIddivision() == ii) {
+             //           nameDivision = result.getNamedivision();
+          //              day.add(String.valueOf(new Date(result.getTimeclose())));
                         //Log.e(Debug, result.getIddivision() + " | " + new Date(result.getTimeclose()) + " | " + result.getKvcount() + " | " + result.getSkvcount());
-                    }
+         //           }
 
-                }
-                System.out.println(nameDivision);
-                day.forEach( d-> System.out.println( d));
-                day = new ArrayList<>();
-            }
+         //       }
+           //     System.out.println(nameDivision);
+          //      day.forEach( d-> System.out.println( d));
+         //       day = new ArrayList<>();
+        //    }
         } catch (IOException e) {
             e.printStackTrace();
         }

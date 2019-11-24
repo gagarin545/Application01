@@ -25,7 +25,6 @@ public class GetWorkerResult implements Runnable{
             Assert.assertTrue(response.isSuccessful());
             resultList = response.body();
             Assert.assertNotNull(resultList);
-            System.out.println("Выбрано:" + resultList.size());
         } catch (IOException e) {
             e.printStackTrace();
         }

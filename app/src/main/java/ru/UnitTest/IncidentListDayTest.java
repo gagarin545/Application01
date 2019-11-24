@@ -16,20 +16,18 @@ import ru.Api.Api;
 import ru.Api.ApiFactory;
 import ru.entity.Incident;
 
-public class IncidentTest {
+public class IncidentListDayTest {
     private final Api api = ApiFactory.createApi();
-
 
     @SuppressLint("NewApi")
     @Test
     public void TestDiv()  {
-        int[] i = {4};
+        int[] i = {4, 228};
         String s = Arrays.toString(i);
         Date dd = new Date();
-        long inc = 9633720L;
 
 
-        Call<List<Incident>> cal = api.incidentListBurn(Arrays.toString(i).replace("[", "").replace("]", ""));
+        Call<List<Incident>> cal = api.getIncidentListDay("30", Arrays.toString(i).replace("[", "").replace("]", ""));
         Response<List<Incident>> respons ;
         try {
             respons = cal.execute();

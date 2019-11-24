@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+
 import ru.adapter.MyAdapterIncident;
 
 public class Incident implements Parcelable {
@@ -175,6 +178,7 @@ public class Incident implements Parcelable {
     @Override
     public String toString() {
         String term = null;
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy hh:mm");
         if(controlterm != 0) {
             int hours = (int)((getControlterm() - MyAdapterIncident.time.getTime()) / 3600000L);
             int min = (int) (((getControlterm() - MyAdapterIncident.time.getTime()) - (long) (hours) * 3600000L) / 60000);
@@ -182,6 +186,8 @@ public class Incident implements Parcelable {
                 term = "<font COLOR='#FF8C00'><b>" +Math.abs(hours) + " ч. " + Math.abs(min) + " мин.</b></font>";
             else
                 term = "<font COLOR='#FF0000'><b>" +Math.abs(hours) + " ч. " + Math.abs(min) + " мин.</b></font>";
+            if( ((controlterm + 7200000) - decisiontime) > 0 )
+                term = "<font COLOR='#339900'><b>" + format.format(new Date( controlterm + 7200000L)) + "</b></font>";
         }
         return  "<font COLOR='#33B5E5'><b>Логин: </b></font>" + service + "<br>" +
                 "<font COLOR='#33B5E5'><b>Заявлено: </b></font>" + declared  + "<br>" +
@@ -191,7 +197,7 @@ public class Incident implements Parcelable {
                 "<font COLOR='#33B5E5'><b>Кл.: </b></font>" + clazz + "<br>" +
                 "<font COLOR='#33B5E5'><b>Повтор: </b></font>" + repet + "<br>" +
                 "<font COLOR='#33B5E5'><b>Доходность: </b></font>" + yield + "<br>" +
-                "<font COLOR='#33B5E5'><b>Интервал: </b></font>" + decisiontime + "<br>" +
+                "<font COLOR='#33B5E5'><b>Интервал c: </b></font>" + format.format(new Date(decisiontime)) + "<br>" +
                 "<font COLOR='#33B5E5'><b>Имя: </b></font>" + nameclient + "<br>" +
                 "<font COLOR='#33B5E5'><b>Уровень облуживания: </b></font>" + labelofservice + "<br>" +
                 "<font COLOR='#33B5E5'><b>Адрес: </b></font>" + address + " " + room + "<br>" +

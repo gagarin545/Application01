@@ -16,7 +16,7 @@ public class WorkersTest {
     @Test
     public void TestWorks() {
 
-        Call<Workers> call = api.getWorkerId("1234567890");
+        Call<Workers> call = api.getWorkerId("1q34567890");
         Response<Workers> response ;
         try {
             response = call.execute();

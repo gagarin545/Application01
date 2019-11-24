@@ -33,15 +33,15 @@ public class test {
             // Проверим, что тело запроса распарсилось нормально
             Assert.assertNotNull(bod);
 
-            bod.forEach( inc -> {
-                int hours = (int)((inc.getControlterm() - time.getTime()) / 3600000);
-                int min = (int) (((inc.getControlterm() - time.getTime()) - (long) (hours) * 3600000L) / 60000);
-                String item = inc.getTypeincident() + inc.getN_incident() + " " + Math.abs(hours) + "ч." + Math.abs(min) + "мин." + " " + inc.getClazz() + " " + inc.getAddress() + " " + inc.getRoom();
-                System.out.println( item + "! " + inc.getDivision().getNamedivision() );
-            });
+         //   bod.forEach( inc -> {
+      //          int hours = (int)((inc.getControlterm() - time.getTime()) / 3600000);
+      //          int min = (int) (((inc.getControlterm() - time.getTime()) - (long) (hours) * 3600000L) / 60000);
+      //          String item = inc.getTypeincident() + inc.getN_incident() + " " + Math.abs(hours) + "ч." + Math.abs(min) + "мин." + " " + inc.getClazz() + " " + inc.getAddress() + " " + inc.getRoom();
+      //          System.out.println( item + "! " + inc.getDivision().getNamedivision() );
+     //       });
 
             //   body.forEach( inc -> System.out.println( inc.getN_incident()));
-            System.out.println(bod.size());
+      //      System.out.println(bod.size());
         } catch (IOException e) {
             e.printStackTrace();
         }

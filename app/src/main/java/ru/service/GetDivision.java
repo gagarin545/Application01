@@ -5,15 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
-
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import ru.activity.DivisionsActivity;
 import ru.entity.Division;
-
 import static ru.Api.Constants.Debug;
 import static ru.Api.Constants.api;
 public class GetDivision {
@@ -34,7 +31,6 @@ public class GetDivision {
                         div[i] = divisions.get(i).getNamedivision();
                         division_poz[i] = divisions.get(i).getIddivision();
                     }
-                    Log.e(Debug, "div=" + div.length + div[div.length - 1]);
                     Intent intent = new Intent(context, DivisionsActivity.class);
                     intent.putExtra("word", div);
                     intent.putExtra("poz", division_poz);

@@ -1,6 +1,5 @@
 package ru.Api;
 
-
 /**
  * Константы для API
  */
@@ -9,4 +8,5 @@ public class Constants {
     public static final Api api = ApiFactory.createApi();
     public static final String Debug = "DEbug";
     public static String Imei;
+    public static boolean change = false;
 }

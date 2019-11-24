@@ -1,16 +1,15 @@
 <resources>
-    <string name="app_name">ПАО Ростелеком(v.6.3)-%1$s</string>
-    <string name="test">Наряды</string>
-    <string name="work">Работник</string>
-    <string name="his">Настройки</string>
-    <string name="Send">Сегодня</string>
-    <string name="Repet">Повторить</string>
+    <string name="app_name">%1$s</string>
+    <string name="name">ПАО Ростелеком(v.2.0)</string>
+    <string name="test">Наряды за неделю</string>
+    <string name="testN">Наряды за 30 дней </string>
+    <string name="work">Сотрудники</string>
+    <string name="option">Настройки</string>
+    <string name="today">Сегодня</string>
+    <string name="Repet">Повторные заявки</string>
     <string name="Ok">Принять в работу</string>
-    <string name="change">Изменить профиль</string>
     <string name="dump">сбросить</string>
     <string name="apply">применить</string>
-    <string name="Lan">Сеть</string>
-    <string name="codSity">#1</string>
     <string name="title_activity_second">SecondActivity</string>
     <string name="title_activity_division">DivisionActivity</string>
 </resources>

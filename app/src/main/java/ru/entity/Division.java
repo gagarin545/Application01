@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Division implements Parcelable{
     @SerializedName("iddivision")
-    private int iddivision;
+    private Integer iddivision;
     @SerializedName("namedivision")
     private String namedivision;
     @SerializedName("idcity")
