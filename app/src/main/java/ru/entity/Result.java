@@ -17,7 +17,7 @@ public class Result implements Parcelable {
     @SerializedName("namedivision")
     private String namedivision;
 
-    protected Result(Parcel in) {
+    private Result(Parcel in) {
         timeclose = in.readLong();
         iddivision = in.readInt();
         kvcount = in.readInt();

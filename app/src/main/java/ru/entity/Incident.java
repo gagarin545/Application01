@@ -2,12 +2,9 @@ package ru.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import com.google.gson.annotations.SerializedName;
-
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-
 import ru.adapter.MyAdapterIncident;
 
 public class Incident implements Parcelable {
