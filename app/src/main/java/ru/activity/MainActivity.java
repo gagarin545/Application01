@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,10 @@ import com.github.mikephil.charting.data.BarData;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import ru.adapter.ChartDataAdapter;
 import ru.adapter.MyAdapterIncident;
@@ -32,29 +37,31 @@ import ru.adapter.MyAdapterIncidentRepet;
 import ru.entity.Incident;
 import ru.entity.Result;
 import ru.entity.WorkerResult;
+import ru.entity.Workers;
 import ru.service.GetDivision;
+import ru.service.GetIncident;
 import ru.service.GetIncidentListDay;
 import ru.service.GetIncidentRepet;
-import ru.service.GetIncidents;
 import ru.service.GetResult;
+import ru.service.GetWorker;
 import ru.service.GetWorkerResult;
-import ru.service.GetWorkers;
 import ru.util.GenerateData;
 
 import static ru.Api.Constants.Imei;
 import static ru.Api.Constants.change;
 
 public class MainActivity extends AppCompatActivity {
-    Thread thread;
+    public static List <Incident> incidents;
+    public static ExecutorService executor = Executors.newFixedThreadPool(2);
+    static Workers workers;
+    Future<List<Incident>> future;
     ChartDataAdapter chartDataAdapter;
     MyAdapterIncident adapter;
     ListView lv;
     BarData date;
     Toast toast;
-    public static GetWorkers worker;
-    List<Result> res;
-    private List <Incident> incidents;
     int day = 30;
+
     @SuppressLint({"HardwareIds", "HandlerLeak"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,21 +69,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         lv = findViewById(R.id.listView1);
         Imei = getImei();
+
         getWorker();
-        if(worker.getwork() != null) {
-            setTitle(Html.fromHtml("<small><b>" + String.format(getString(R.string.app_name), worker.getwork().getName()) + "</font>"));
-            GetIncidents getIncidents = new GetIncidents(worker.getwork().getIddivision());
-            thread = new Thread(getIncidents);
-            thread.start();
-            while (thread.isAlive()) {
-            }
-            incidents = getIncidents.getIncident();
+        if(workers != null) {
+            setTitle(Html.fromHtml("<small><b>" + String.format(getString(R.string.app_name), workers.getName()) + "</font>"));
         }
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick (AdapterView < ? > parent, View v, int position, long id){
                 Intent intent = new Intent( MainActivity.this, SecondActivity.class);
                 intent.putExtra("word", incidents.get(position).toString());
+                intent.putExtra("incident", String.valueOf(incidents.get(position).getN_incident()));
+                Log.e("DEbug", String.valueOf(incidents.get(position).getN_incident() ));
                 startActivity(intent);
             }
         });
@@ -90,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        executor.shutdown();
     }
 
     @Override
@@ -100,46 +105,41 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         ArrayList<BarData> list = new ArrayList<>();
-        GetResult getResult;
         if( change) getWorker();
         switch (item.getItemId()) {
             case R.id.today:
-                GetIncidents getIncidents = new GetIncidents(worker.getwork().getIddivision());
-                thread = new Thread( getIncidents);
-                thread.start();
-                while(thread.isAlive()) {}
-                incidents = getIncidents.getIncident();
+                try {
+                    future = executor.submit( (new GetIncident(workers.getIddivision())).task);
+                     incidents = future.get();
+                }  catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
                 toast = Toast.makeText(this, "Нарядов " + incidents.size() , Toast.LENGTH_LONG);
                 toast.show();
                 adapter = new MyAdapterIncident(this);
                 lv.setAdapter(adapter);
                 return true;
             case R.id.weekOnOrder:
-                getResult= new GetResult(worker.getwork().getIddivision());
-                thread = new Thread(getResult);
-                thread.start();
-                while(thread.isAlive()) {}
-                res = getResult.getResult();
-                for(int i :worker.getwork().getIddivision())
-                    if((date = new GenerateData().getBarData(res, i)) != null)
-                        list.add( date);
+                Future <List<Result>> future_res = executor.submit((new GetResult(workers.getIddivision())).task);
+                try {
+                    for(int i :workers.getIddivision())
+                        if((date = new GenerateData().getBarData(future_res.get(), i)) != null)
+                            list.add( date);
+                } catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
                 chartDataAdapter = new ChartDataAdapter(getApplicationContext(), list);
                 lv.setAdapter(chartDataAdapter);
                 return true;
             case R.id.weekOnWorkers:
                 list = new ArrayList<>();
                 Calendar calendar = Calendar.getInstance();
-                GetWorkerResult getWorkerResult = new GetWorkerResult( worker.getwork().getIddivision());
-                thread = new Thread(getWorkerResult);
-                thread.start();
-                while(thread.isAlive()) {}
-                List<WorkerResult> workerResult = getWorkerResult.getWorkerResult();
-                calendar.setTimeInMillis(workerResult.get(0).getTimeclose());
-                for(int i=0; i < 7; i++) {
-                    if ((date = new GenerateData().getBarData(workerResult, calendar.getTimeInMillis())) != null)
-                        list.add(date);
-                    calendar.add(Calendar.DAY_OF_YEAR, 1);
-                }
+                try {
+                    Future <List<WorkerResult>> future_reswork = executor.submit((new GetWorkerResult(workers.getIddivision())).task);
+                    List<WorkerResult> workerResult = future_reswork.get();
+                    calendar.setTimeInMillis(workerResult.get(0).getTimeclose());
+                    for(int i=0; i < 7; i++) {
+                        if ((date = new GenerateData().getBarData(workerResult, calendar.getTimeInMillis())) != null)
+                            list.add(date);
+                        calendar.add(Calendar.DAY_OF_YEAR, 1);
+                    }
+                } catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
                 chartDataAdapter = new ChartDataAdapter(getApplicationContext(), list);
                 lv.setAdapter(chartDataAdapter);
                 return true;
@@ -147,22 +147,20 @@ public class MainActivity extends AppCompatActivity {
                 new GetDivision( this).getdivision();
                 return true;
             case R.id.Nday:
-                GetIncidentListDay getIncidentListDay = new GetIncidentListDay(worker.getwork().getIddivision(), day);
-                thread = new Thread( getIncidentListDay);
-                thread.start();
-                while(thread.isAlive()) {}
-                incidents = getIncidentListDay.getIncident();
+                try {
+                    future = executor.submit(new GetIncidentListDay(workers.getIddivision(), day).task);
+                    incidents = future.get();
+                } catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
                 toast = Toast.makeText(this, "Нарядов " + incidents.size() , Toast.LENGTH_LONG);
                 toast.show();
                 MyAdapterIncidentList adapters = new MyAdapterIncidentList(this );
                 lv.setAdapter(adapters);
                 return true;
             case R.id.Repet:
-                GetIncidentRepet incidentRepet = new GetIncidentRepet(worker.getwork().getIddivision());
-                thread = new Thread( incidentRepet);
-                thread.start();
-                while(thread.isAlive()) {}
-                incidents = incidentRepet.getIncidentRepet();
+                try {
+                    future = executor.submit( (new GetIncidentRepet(workers.getIddivision())).task);
+                    incidents = future.get();
+                } catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
                 toast = Toast.makeText(this, "Нарядов " + incidents.size() , Toast.LENGTH_LONG);
                 toast.show();
                 MyAdapterIncidentRepet adapterRepet = new MyAdapterIncidentRepet(this );
@@ -173,18 +171,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    void getWorker() {
+        Future<Workers> futurework = executor.submit( new GetWorker(  Imei).task);
+        try {
+            workers = futurework.get();
+            change = false;
+        } catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
+    }
     @SuppressLint("HardwareIds")
     private String getImei() {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
             return Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         return telephonyManager.getDeviceId();
-    }
-    void getWorker() {
-        worker = new GetWorkers( this, Imei);
-        thread = new Thread(worker);
-        thread.start();
-        while(thread.isAlive()) {}
-        change = false;
     }
 }

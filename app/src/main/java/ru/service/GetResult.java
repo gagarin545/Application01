@@ -2,34 +2,24 @@ package ru.service;
 
 import org.junit.Assert;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.concurrent.Callable;
 import retrofit2.Call;
 import retrofit2.Response;
 import ru.entity.Result;
 
 import static ru.Api.Constants.api;
 
-public class GetResult implements Runnable{
-    private List<Result> resultList;
+public class GetResult {
     private int[] iddivision;
-
     public GetResult(int[] iddivision) {        this.iddivision = iddivision;    }
 
-    @Override
-    public void run() {
+    public Callable task = () -> {
         Call<List<Result>> resultBurning = api.resultList(Arrays.toString(iddivision).replace("[", "").replace("]", ""));
         Response<List<Result>> response;
-        try {
-            response = resultBurning.execute();
-            Assert.assertTrue(response.isSuccessful());
-            resultList = response.body();
-            Assert.assertNotNull(resultList);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    public List<Result> getResult() { return resultList;}
+        response = resultBurning.execute();
+        Assert.assertTrue(response.isSuccessful());
+        return response.body();
+    };
 }

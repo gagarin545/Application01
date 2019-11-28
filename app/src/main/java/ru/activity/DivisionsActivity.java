@@ -26,7 +26,7 @@ public class DivisionsActivity extends AppCompatActivity implements View.OnClick
         ListView choiceList = findViewById(R.id.listView2);
         findViewById(R.id.dbutton1).setOnClickListener(this);
         findViewById(R.id.dbutton2).setOnClickListener(this);
-        if(MainActivity.worker.getwork() != null) et.setText( MainActivity.worker.getwork().getName());
+        if(MainActivity.workers != null) et.setText( MainActivity.workers.getName());
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.list_item, division);
         choiceList.setAdapter(adapter);
         choiceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

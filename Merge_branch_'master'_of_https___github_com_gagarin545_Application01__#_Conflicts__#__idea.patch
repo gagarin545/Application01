@@ -1,0 +1,2366 @@
+Index: app/src/main/java/ru/util/ArrayAdpterList.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/util/ArrayAdpterList.java	(date 1572182145140)
++++ app/src/main/java/ru/util/ArrayAdpterList.java	(date 1572182145140)
+@@ -0,0 +1,68 @@
++package ru.util;
++
++import android.content.Context;
++import android.support.constraint.ConstraintLayout;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.BaseAdapter;
++import android.widget.ListAdapter;
++
++import com.example.application01.R;
++
++import java.util.List;
++
++public class ArrayAdpterList<L> extends BaseAdapter implements ListAdapter {
++
++    private Context context;
++    private List<ListItem> items;
++
++    public ArrayAdpterList(Context context, List<ListItem> items) {
++        this.context = context;
++        this.items = items;
++    }
++
++    @Override
++    public int getCount() {
++        return items.size();
++    }
++
++    @Override
++    public ListItem getItem(int position) {
++        return items.get(position);
++    }
++
++    @Override
++    public long getItemId(int position) {
++        return items.get(position).getId();
++    }
++
++    @Override
++    public View getView(int position, View convertView, ViewGroup parent) {
++        ListItem item = getItem(position);
++        convertView = LayoutInflater.from(context).inflate(R.layout.list_item, null);
++        ConstraintLayout layout = convertView.findViewById(R.id.layout);
++        Integer colorRes;
++        switch (item.getType()) {
++            default:
++            case R.color.RED:
++                colorRes = context.getResources().getColor(R.color.RED);
++                break;
++            case R.color.Green:
++                colorRes = context.getResources().getColor(R.color.Green);
++                break;
++            case R.color.Blue:
++                colorRes = context.getResources().getColor(R.color.Blue);
++                break;
++            case R.color.Yellow:
++                colorRes = context.getResources().getColor(R.color.Yellow);
++                break;
++            case R.color.DarkSlateGray:
++                colorRes = context.getResources().getColor(R.color.DarkSlateGray);
++                break;
++        }
++        layout.setBackgroundColor(context.getResources().getColor(R.color.RED));
++        return convertView;
++    }
++}
++
+Index: app/src/main/java/ru/util/ListItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/util/ListItem.java	(date 1569757528793)
++++ app/src/main/java/ru/util/ListItem.java	(date 1569757528793)
+@@ -0,0 +1,20 @@
++package ru.util;
++
++public class ListItem {
++    private Long id;
++    private Integer type;
++    public ListItem(Long id, Integer type){
++        this.id     = id;
++        this.type   = type;
++    }
++    public Long getId(){ return id;        }
++    public Integer getType(){ return type; }
++
++    public void setId(Long id) {
++        this.id = id;
++    }
++
++    public void setType(Integer type) {
++        this.type = type;
++    }
++}
+Index: app/src/main/java/ru/adapter/MyAdapterIncident.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/adapter/MyAdapterIncident.java	(date 1572182145276)
++++ app/src/main/java/ru/adapter/MyAdapterIncident.java	(date 1572182145276)
+@@ -0,0 +1,60 @@
++package ru.adapter;
++
++import android.annotation.SuppressLint;
++import android.content.Context;
++import android.graphics.Color;
++import android.support.annotation.NonNull;
++import android.util.Log;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.ArrayAdapter;
++import android.widget.ListAdapter;
++import android.widget.TextView;
++
++import com.example.application01.R;
++
++import java.sql.Timestamp;
++import java.util.Calendar;
++import java.util.Date;
++
++import static ru.Api.Constants.Debug;
++import static ru.service.GetIncidents.incidents;
++
++public class MyAdapterIncident extends ArrayAdapter implements ListAdapter {
++    public static Timestamp time = new Timestamp(Calendar.getInstance().getTimeInMillis());
++
++    public MyAdapterIncident(@NonNull Context context) {
++        super(context, R.layout.list_item, incidents);
++    }
++
++    @SuppressLint("ResourceAsColor")
++    @Override
++    public View getView(int position, View convertView, ViewGroup parent) {
++
++        @SuppressLint("SimpleDateFormat") Date controlTerm = null;
++        int hours = 0 , min = 0;
++        String item;
++        Log.e(Debug, String.valueOf((int)(incidents.get(position).getControlterm() )));
++        Log.e(Debug, String.valueOf((int)(time.getTime())));
++        Log.e(Debug, String.valueOf((int)(incidents.get(position).getControlterm() - time.getTime())));
++
++        if( incidents.get(position).getControlterm() > 0) {
++            hours = (int)((incidents.get(position).getControlterm() - time.getTime()) / 3600000L);
++            min = (int) (((incidents.get(position).getControlterm() - time.getTime()) - (long) (hours) * 3600000L) / 60000);
++            item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + " " + Math.abs(hours) + "ч." + Math.abs(min) + "мин." + " " + incidents.get(position).getClazz() + " " + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom();
++        } else
++            item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + " " + incidents.get(position).getClazz() + " " + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom();
++        System.out.println(">>>" + hours);
++        Log.e(Debug, incidents.get(position).getN_incident() + " " + hours + " " + min);
++        if (convertView == null) {
++            convertView = LayoutInflater.from(getContext()) .inflate(android.R.layout.simple_list_item_2, null);
++        }
++        TextView tv = convertView.findViewById(android.R.id.text1);
++        tv.setText(item);
++        if (hours < 5)  tv.setTextColor(Color.parseColor("#FF8C00"));
++        if (min < 0)    tv.setTextColor(Color.RED);
++        if (incidents.get(position).getClazz().contains("ЮЛ"))  tv.setTextColor(Color.parseColor("#D2691E"));
++        return convertView;
++    }
++}
+Index: app/src/main/java/ru/service/GetWorkers.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/service/GetWorkers.java	(date 1572162214169)
++++ app/src/main/java/ru/service/GetWorkers.java	(date 1572162214169)
+@@ -0,0 +1,42 @@
++package ru.service;
++
++import android.content.Context;
++import android.util.Log;
++
++import org.junit.Assert;
++import java.io.IOException;
++import retrofit2.Call;
++import retrofit2.Response;
++import ru.entity.Workers;
++
++import static ru.Api.Constants.Debug;
++import static ru.Api.Constants.api;
++
++public class GetWorkers  implements Runnable {
++    private String Imei;
++    private Context context;
++    private Workers workers;
++    public GetWorkers(Context context, String Imei) {
++        this.context = context;
++        this.Imei = Imei;
++    }
++
++    @Override
++    public void run() {
++        Call<Workers> works = api.getWorkerId(Imei);
++        Response<Workers> response;
++        try {
++            response = works.execute();
++            Assert.assertTrue(response.isSuccessful());
++            workers = response.body();
++            Assert.assertNotNull(workers);
++            Log.e( Debug, workers.getName() + workers.getImei() );
++        } catch (IOException e) {
++            Log.e( Debug, "worker - not found!!!!" );
++            new GetDivision( context).getdivision();
++           // e.printStackTrace();
++        }
++
++    }
++    public Workers getwork() { return workers;}
++}
+Index: app/src/main/java/ru/util/MyXAxisValueFormatter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/util/MyXAxisValueFormatter.java	(date 1570704413724)
++++ app/src/main/java/ru/util/MyXAxisValueFormatter.java	(date 1570704413724)
+@@ -0,0 +1,19 @@
++package ru.util;
++import com.github.mikephil.charting.components.AxisBase;
++import com.github.mikephil.charting.formatter.IAxisValueFormatter;
++
++
++public class MyXAxisValueFormatter implements IAxisValueFormatter {
++
++    private String[] mValues;
++
++    public MyXAxisValueFormatter(String[] values) {
++        this.mValues = values;
++    }
++
++    @Override
++    public String getFormattedValue(float value, AxisBase axis) {
++        return String.format(mValues[(int) value]);
++    }
++
++}
+\ No newline at end of file
+Index: app/src/main/java/ru/adapter/ChartDataAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/adapter/ChartDataAdapter.java	(date 1572182079989)
++++ app/src/main/java/ru/adapter/ChartDataAdapter.java	(date 1572182079989)
+@@ -0,0 +1,68 @@
++package ru.adapter;
++
++import android.content.Context;
++import android.support.annotation.NonNull;
++import android.support.annotation.Nullable;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.ArrayAdapter;
++import com.example.application01.R;
++import com.github.mikephil.charting.charts.BarChart;
++import com.github.mikephil.charting.components.XAxis;
++import com.github.mikephil.charting.components.YAxis;
++import com.github.mikephil.charting.data.BarData;
++import java.util.List;
++import ru.util.MyXAxisValueFormatter;
++
++class ChartDataAdapter extends ArrayAdapter<BarData> {
++    String[] mValues;
++    ChartDataAdapter(Context context, List<BarData> objects) {
++            super(context, 0, objects);
++        }
++        @NonNull
++        @Override
++        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
++            BarData data = getItem(position);
++            ViewHolder holder = null;
++
++            if(convertView == null){
++                holder = new ViewHolder();
++                //convertView = getLayoutInflater().from(getContext()).inflate(R.layout.list_item_barchat, null );
++                convertView =  convertView = LayoutInflater.from(getContext()) .inflate(R.layout.list_item_barchat, null);
++
++                holder.chart = convertView.findViewById(R.id.chart);
++                convertView.setTag(holder);
++            }  else
++                holder = (ViewHolder) convertView.getTag();
++
++            holder.chart.getDescription().setEnabled(false);
++            holder.chart.setDrawGridBackground(false);
++            XAxis xAxis = holder.chart.getXAxis();
++            xAxis.setPosition(XAxis.XAxisPosition.TOP);
++            xAxis.setDrawGridLines(true);
++            xAxis.setLabelRotationAngle(-60);
++            xAxis.setLabelCount( mValues.length, false);
++
++            xAxis.setValueFormatter(new MyXAxisValueFormatter(mValues));
++
++            YAxis leftAxis = holder.chart.getAxisLeft();
++            leftAxis.setLabelCount(4, false);
++            leftAxis.setSpaceTop(20f);
++
++            YAxis rigthAxis = holder.chart.getAxisRight();
++            rigthAxis.setLabelCount(4, false);
++            rigthAxis.setSpaceTop(20f);
++
++            holder.chart.setData(data);
++            holder.chart.setFitBars(true);
++            holder.chart.animateY(500);
++            return convertView;
++
++        }
++
++        private class ViewHolder{
++            BarChart chart;
++
++        }
++    }
+Index: app/src/main/java/ru/service/GetIncidents.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/service/GetIncidents.java	(date 1572162625635)
++++ app/src/main/java/ru/service/GetIncidents.java	(date 1572162625635)
+@@ -0,0 +1,40 @@
++package ru.service;
++
++import org.junit.Assert;
++
++import java.io.IOException;
++import java.util.Arrays;
++import java.util.List;
++
++import retrofit2.Call;
++import retrofit2.Response;
++import ru.entity.Incident;
++
++import static ru.Api.Constants.api;
++
++
++public class GetIncidents implements Runnable {
++    public static List<Incident> incidents;
++    private int[] iddivision;
++    public GetIncidents( int[] iddivision) {
++        this.iddivision = iddivision;
++    }
++
++    @Override
++    public void run() {
++        Call<List<Incident>> incidentBurning = api.incidentListBurn(Arrays.toString(iddivision).replace("[", "").replace("]", ""));
++        Response<List<Incident>> response;
++
++        try {
++            response = incidentBurning.execute();
++            Assert.assertTrue(response.isSuccessful());
++            incidents = response.body();
++            Assert.assertNotNull(incidents);
++            System.out.println("Выбрано:" + incidents.size());
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++    }
++
++    public List<Incident> getIncident() { return incidents;}
++}
+Index: app/src/main/res/layout/list_item_barchat.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/list_item_barchat.xml	(date 1552811808935)
++++ app/src/main/res/layout/list_item_barchat.xml	(date 1552811808935)
+@@ -0,0 +1,16 @@
++<?xml version="1.0" encoding="utf-8"?>
++<android.support.constraint.ConstraintLayout
++    xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent">
++
++    <com.github.mikephil.charting.charts.BarChart
++        android:id="@+id/chart"
++        android:layout_width="match_parent"
++        android:layout_height="250dp"
++        tools:ignore="MissingConstraints">
++
++    </com.github.mikephil.charting.charts.BarChart>
++
++</android.support.constraint.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/java/ru/UnitTest/IncidentTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/UnitTest/IncidentTest.java	(date 1572176032609)
++++ app/src/main/java/ru/UnitTest/IncidentTest.java	(date 1572176032609)
+@@ -0,0 +1,50 @@
++package ru.UnitTest;
++
++import android.annotation.SuppressLint;
++
++import org.junit.Assert;
++import org.junit.Test;
++
++import java.io.IOException;
++import java.util.Arrays;
++import java.util.Date;
++import java.util.List;
++
++import retrofit2.Call;
++import retrofit2.Response;
++import ru.Api.Api;
++import ru.Api.ApiFactory;
++import ru.entity.Incident;
++
++public class IncidentTest {
++    private final Api api = ApiFactory.createApi();
++
++
++    @SuppressLint("NewApi")
++    @Test
++    public void TestDiv()  {
++        int[] i = {4};
++        String s = Arrays.toString(i);
++        Date dd = new Date();
++
++
++        Call<List<Incident>> cal = api.incidentListBurn(Arrays.toString(i).replace("[", "").replace("]", ""));
++        Response<List<Incident>> respons ;
++        try {
++            respons = cal.execute();
++            // Проверим, что запрос завершился с кодом 2XX
++            Assert.assertTrue(respons.isSuccessful());
++            List<Incident> bod = respons.body();
++
++            // Проверим, что тело запроса распарсилось нормально
++            Assert.assertNotNull(bod);
++
++            bod.forEach( inc -> System.out.println( inc.getN_incident() + "   ->" +  inc.getControlterm() ));
++
++            //   body.forEach( inc -> System.out.println( inc.getN_incident()));
++            System.out.println(bod.size());
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++    }
++}
+Index: app/src/main/java/ru/UnitTest/ResultTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/UnitTest/ResultTest.java	(date 1572180511370)
++++ app/src/main/java/ru/UnitTest/ResultTest.java	(date 1572180511370)
+@@ -0,0 +1,51 @@
++package ru.UnitTest;
++
++import android.annotation.SuppressLint;
++
++import org.junit.Assert;
++import org.junit.Test;
++
++import java.io.IOException;
++import java.sql.Date;
++import java.util.Arrays;
++import java.util.List;
++
++import retrofit2.Call;
++import retrofit2.Response;
++import ru.Api.Api;
++import ru.Api.ApiFactory;
++import ru.entity.Result;
++
++public class ResultTest {
++    private final Api api = ApiFactory.createApi();
++
++
++    @SuppressLint("NewApi")
++    @Test
++    public void TestDiv()  {
++        int[] i = {4, 110};
++        String s = Arrays.toString(i);
++        Call<List<Result>> call = api.resultList( Arrays.toString(i).replace("[", "").replace("]", ""));
++        Response<List<Result>> respons ;
++        try {
++            respons = call.execute();
++            // Проверим, что запрос завершился с кодом 2XX
++            Assert.assertTrue(respons.isSuccessful());
++            List<Result> bod = respons.body();
++
++            // Проверим, что тело запроса распарсилось нормально
++            Assert.assertNotNull(bod);
++
++            bod.forEach( res -> {
++                System.out.println( new Date(res.getDat()) + "   ->" + res.getKvcount() + "|" + res.getSkvcount() + "  " + res.getNamedivision() );
++
++             System.out.println("|" + res.getIddivision()); });
++
++            //   body.forEach( inc -> System.out.println( inc.getN_incident()));
++            System.out.println(bod.size());
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++    }
++}
++
+Index: app/src/main/java/ru/UnitTest/test.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/UnitTest/test.java	(date 1572182145058)
++++ app/src/main/java/ru/UnitTest/test.java	(date 1572182145058)
+@@ -0,0 +1,51 @@
++package ru.UnitTest;
++
++import android.annotation.SuppressLint;
++
++import org.junit.Assert;
++import org.junit.Test;
++
++import java.io.IOException;
++import java.sql.Timestamp;
++import java.util.Arrays;
++import java.util.Calendar;
++import java.util.List;
++
++import retrofit2.Call;
++import retrofit2.Response;
++import ru.Api.Api;
++import ru.Api.ApiFactory;
++import ru.entity.Incident;
++
++public class test {
++    private final Api api = ApiFactory.createApi();
++    private Timestamp time = new Timestamp(Calendar.getInstance().getTimeInMillis());
++    @SuppressLint("NewApi")
++    @Test
++    public void TestDiv() {
++        int[] i = {90, 133, 108, 107, 4, 109, 110};
++        Call<List<Incident>> cal = api.getIncident(Arrays.toString(i).replace("[", "").replace("]", ""));
++        Response<List<Incident>> respons ;
++        try {
++            respons = cal.execute();
++            // Проверим, что запрос завершился с кодом 2XX
++            Assert.assertTrue(respons.isSuccessful());
++            List<Incident> bod = respons.body();
++
++            // Проверим, что тело запроса распарсилось нормально
++            Assert.assertNotNull(bod);
++
++            bod.forEach( inc -> {
++                int hours = (int)((inc.getControlterm() - time.getTime()) / 3600000);
++                int min = (int) (((inc.getControlterm() - time.getTime()) - (long) (hours) * 3600000L) / 60000);
++                String item = inc.getTypeincident() + inc.getN_incident() + " " + Math.abs(hours) + "ч." + Math.abs(min) + "мин." + " " + inc.getClazz() + " " + inc.getAddress() + " " + inc.getRoom();
++                System.out.println( item + "! " + inc.getDivision().getNamedivision() );
++            });
++
++            //   body.forEach( inc -> System.out.println( inc.getN_incident()));
++            System.out.println(bod.size());
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++    }
++}
+Index: app/src/main/res/layout/list_item.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/list_item.xml	(date 1570079429849)
++++ app/src/main/res/layout/list_item.xml	(date 1570079429849)
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="utf-8"?>
++
++<TextView xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/text1"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content"
++    android:textAppearance="?android:attr/textAppearanceListItemSmall"
++    android:gravity="center_vertical"
++    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
++    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
++    android:minHeight="?android:attr/listPreferredItemHeightSmall"
++    android:background="?android:attr/activatedBackgroundIndicator"
++    tools:ignore="MissingDefaultResource" />
+Index: app/src/main/java/ru/entity/Result.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/entity/Result.java	(date 1572176159948)
++++ app/src/main/java/ru/entity/Result.java	(date 1572176159948)
+@@ -0,0 +1,62 @@
++package ru.entity;
++
++import android.os.Parcel;
++import android.os.Parcelable;
++
++import com.google.gson.annotations.SerializedName;
++
++public class Result implements Parcelable {
++    @SerializedName("date")
++    private long dat;
++    @SerializedName("iddivision")
++    private int iddivision;
++    @SerializedName("kvcount")
++    private int kvcount;
++    @SerializedName("skvcount")
++    private int skvcount;
++    @SerializedName("namedivision")
++    private String namedivision;
++
++    protected Result(Parcel in) {
++        dat = in.readLong();
++        iddivision = in.readInt();
++        kvcount = in.readInt();
++        skvcount = in.readInt();
++        namedivision = in.readString();
++    }
++
++    public static final Creator<Result> CREATOR = new Creator<Result>() {
++        @Override
++        public Result createFromParcel(Parcel in) { return new Result(in);        }
++        @Override
++        public Result[] newArray(int size) {            return new Result[size];        }
++    };
++
++    public long getDat() {        return dat;    }
++    public void setDat(long dat) {        this.dat = dat;    }
++    public int getIddivision() {        return iddivision;    }
++    public void setIddivision(int iddivision) {        this.iddivision = iddivision;    }
++    public int getKvcount() {        return kvcount;    }
++    public void setKvcount(int kvcount) {        this.kvcount = kvcount;    }
++    public int getSkvcount() {        return skvcount;    }
++    public void setSkvcount(int skvcount) {        this.skvcount = skvcount;    }
++    public String getNamedivision() {        return namedivision;    }
++    public void setNamedivision(String namedivision) {        this.namedivision = namedivision;    }
++
++    public Result() {}
++
++
++    @Override
++    public int describeContents() {
++        return 0;
++    }
++
++    @Override
++    public void writeToParcel(Parcel dest, int flags) {
++        dest.writeLong(dat);
++        dest.writeInt(iddivision);
++        dest.writeInt(kvcount);
++        dest.writeInt(skvcount);
++        dest.writeString(namedivision);
++    }
++}
+Index: app/src/androidTest/java/com/example/application01/ExampleInstrumentedTest.java
+===================================================================
+--- app/src/androidTest/java/com/example/application01/ExampleInstrumentedTest.java	(date 1569303612000)
++++ app/src/androidTest/java/com/example/application01/ExampleInstrumentedTest.java	(date 1569303612000)
+@@ -1,26 +0,0 @@
+-package com.example.application01;
+-
+-import android.content.Context;
+-import android.support.test.InstrumentationRegistry;
+-import android.support.test.runner.AndroidJUnit4;
+-
+-import org.junit.Test;
+-import org.junit.runner.RunWith;
+-
+-import static org.junit.Assert.*;
+-
+-/**
+- * Instrumented test, which will execute on an Android device.
+- *
+- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+- */
+-@RunWith(AndroidJUnit4.class)
+-public class ExampleInstrumentedTest {
+-    @Test
+-    public void useAppContext() {
+-        // Context of the app under test.
+-        Context appContext = InstrumentationRegistry.getTargetContext();
+-
+-        assertEquals("com.example.application01", appContext.getPackageName());
+-    }
+-}
+Index: app/src/main/java/ru/activity/DivisionActivity.java
+===================================================================
+--- app/src/main/java/ru/activity/DivisionActivity.java	(date 1569303612000)
++++ app/src/main/java/ru/activity/DivisionActivity.java	(date 1569303612000)
+@@ -1,42 +0,0 @@
+-package ru.activity;
+-
+-import android.os.Bundle;
+-import android.support.v7.app.AppCompatActivity;
+-import android.util.Log;
+-import android.view.View;
+-import android.widget.AdapterView;
+-import android.widget.ArrayAdapter;
+-import android.widget.ListView;
+-import com.example.application01.R;
+-import java.util.ArrayList;
+-import ru.service.setDivision;
+-import static ru.Api.Constants.Debug;
+-
+-public class DivisionActivity extends AppCompatActivity {
+-
+-    ArrayList<Integer> iddivision = new ArrayList<>() ;
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        setContentView(R.layout.activity_division);
+-        String[] division = getIntent().getStringArrayExtra("word");
+-        ListView choiceList = (ListView) findViewById(R.id.listView1);
+-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, division);
+-        choiceList.setAdapter(adapter);
+-        choiceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+-            @Override
+-            public void onItemClick (AdapterView < ? > parent, View v, int position, long id){
+-                iddivision.add(position);
+-                Log.e(Debug , String.valueOf(position));
+-            }
+-        });
+-    }
+-    @Override
+-    protected void onStop() {
+-        super.onStop();
+-
+-        setDivision  setdivision = new setDivision( iddivision, "tets");
+-        setdivision.setdivision();
+-
+-    }
+-}
+Index: app/src/main/java/ru/entity/Tit.java
+===================================================================
+--- app/src/main/java/ru/entity/Tit.java	(date 1569303612000)
++++ app/src/main/java/ru/entity/Tit.java	(date 1569303612000)
+@@ -1,42 +0,0 @@
+-package ru.entity;
+-
+-import android.os.Parcel;
+-import android.os.Parcelable;
+-
+-import com.google.gson.annotations.SerializedName;
+-
+-public class Tit implements Parcelable {
+-    @SerializedName("idtit")
+-    private int idtit;
+-    @SerializedName("nametit")
+-    private String nametit;
+-
+-    public static final Creator<Tit> CREATOR = new Creator<Tit>() {
+-        @Override
+-        public Tit createFromParcel(Parcel in) {
+-            return new Tit(in);
+-        }
+-
+-        @Override
+-        public Tit[] newArray(int size) {            return new Tit[size];        }
+-    };
+-
+-    protected Tit(Parcel in) {
+-        idtit   = in.readInt();
+-        nametit = in.readString();
+-    }
+-
+-    public int getIdtit() {        return idtit;    }
+-    public String getNametit() {        return nametit;    }
+-    public void setIdtit(int idtit) {        this.idtit = idtit;    }
+-    public void setNametit(String nametit) {        this.nametit = nametit;    }
+-
+-    @Override
+-    public int describeContents() {        return 0;    }
+-
+-    @Override
+-    public void writeToParcel(Parcel dest, int flags) {
+-        dest.writeInt( idtit);
+-        dest.writeString( nametit);
+-    }
+-}
+Index: app/src/main/java/ru/service/getWorker.java
+===================================================================
+--- app/src/main/java/ru/service/getWorker.java	(date 1569303612000)
++++ app/src/main/java/ru/service/getWorker.java	(date 1569303612000)
+@@ -1,40 +0,0 @@
+-package ru.service;
+-
+-import android.content.Context;
+-import android.support.annotation.NonNull;
+-import android.util.Log;
+-
+-import retrofit2.Call;
+-import retrofit2.Callback;
+-import retrofit2.Response;
+-import ru.entity.Workers;
+-
+-import static ru.Api.Constants.Debug;
+-import static ru.Api.Constants.api;
+-
+-public class getWorker  {
+-    private String Imei;
+-    private Context context;
+-    public getWorker( Context context, String Imei) {
+-        this.Imei = Imei;
+-        this.context = context;
+-    }
+-    public void getwork() {
+-        api.getworkerid( Imei).enqueue(new Callback<Workers>() {
+-            @Override
+-            public void onResponse(@NonNull Call<Workers> call, @NonNull Response<Workers> response) {
+-                if (response.isSuccessful()) {
+-                    Workers worker = response.body();
+-                    Log.e(Debug, worker.getName());
+-                } else {    Log.e(Debug, "error " + response.code());   }
+-            }
+-
+-            @Override
+-            public void onFailure(@NonNull Call<Workers> call, @NonNull Throwable t) {
+-                Log.e( Debug, "worker - not found!!!!" + t.getMessage());
+-                new getDivision( context).getdivision();
+-            }
+-        });
+-
+-    }
+-}
+Index: app/src/main/java/ru/service/MyService.java
+===================================================================
+--- app/src/main/java/ru/service/MyService.java	(date 1569303612000)
++++ app/src/main/java/ru/service/MyService.java	(date 1569303612000)
+@@ -1,119 +0,0 @@
+-package ru.service;
+-
+-
+-import android.app.Service;
+-import android.content.Intent;
+-import android.location.Location;
+-import android.location.LocationListener;
+-import android.location.LocationManager;
+-import android.os.Bundle;
+-import android.os.IBinder;
+-import android.support.annotation.NonNull;
+-import android.support.annotation.Nullable;
+-import android.util.Log;
+-
+-import java.util.List;
+-import java.util.concurrent.ExecutorService;
+-
+-import retrofit2.Call;
+-import retrofit2.Callback;
+-import retrofit2.Response;
+-import ru.Api.Api;
+-import ru.Api.ApiFactory;
+-import ru.entity.Division;
+-import ru.entity.Workers;
+-
+-import static ru.Api.Constants.Debug;
+-
+-public class MyService extends Service {
+-    private final Api api = ApiFactory.createApi();
+-    private LocationManager locationManager;
+-    private  String Imei;
+-    ExecutorService es;
+-
+-    @Override
+-    public void onCreate() {
+-        super.onCreate();
+-       // es = Executors.newFixedThreadPool(1);
+-   //     Imei = intent.getStringExtra("Imei");
+-        getWorker();
+-        Log.e(Debug, "MyService oncreate" );
+-    }
+-
+-    private void getWorker(){
+-        api.getworkerid( Imei).enqueue(new Callback<Workers>() {
+-            @Override
+-            public void onResponse(@NonNull Call<Workers> call, @NonNull Response<Workers> response) {
+-                if (response.isSuccessful()) {
+-                Workers workers = response.body();
+-                    Log.e(Debug, workers.getName());
+-                } else {    Log.e(Debug, "error " + response.code());   }
+-            }
+-
+-            @Override
+-            public void onFailure(@NonNull Call<Workers> call, @NonNull Throwable t) {
+-                Log.e( Debug, "worker - not found!!!!");
+-                api.getDivision().enqueue(new Callback<List<Division>>() {
+-                    @Override
+-                    public void onResponse(@NonNull Call<List<Division>> call,@NonNull Response<List<Division>> response) {
+-                        if(response.isSuccessful()) {
+-                            List<Division> divisions = response.body();
+-                            String[] div = new String[divisions.size()];
+-                            for( int i=0 ; i < divisions.size(); i++)
+-                                div[i] = divisions.get(i).getNamedevision();
+-                            Log.e(Debug, "div-->" + String.valueOf(div.length));
+-                        } else  {   Log.e(Debug, "error " + response.code()); }
+-                    }
+-                    @Override
+-                    public void onFailure(@NonNull Call<List<Division>> call,@NonNull Throwable t) { Log.e(Debug,"No"); }
+-                });
+-            }
+-        });
+-    }
+-
+-    /**
+-     * Слушатель для обновления гео
+-     */
+-    private final LocationListener locationListener = new LocationListener() {
+-        @Override
+-        public void onLocationChanged(Location location) {
+-            Log.v(Debug, "Location changed: " + location);
+-            getWorker();
+-        }
+-
+-        @Override
+-        public void onStatusChanged(String provider, int status, Bundle extras) {
+-            Log.v(Debug, "Status changed: " + provider + ", status: " + status);
+-        }
+-
+-        @Override
+-        public void onProviderEnabled(String provider) {
+-            Log.v(Debug, "Provider enabled: " + provider);
+-        }
+-
+-        @Override
+-        public void onProviderDisabled(String provider) {
+-            Log.v(Debug, "Provider disabled: " + provider);
+-        }
+-    };
+-    @Override
+-    public void onDestroy() {
+-        //  locationManager.removeUpdates(locationListener);
+-        Log.e(Debug, "onDistroy");
+-        super.onDestroy();
+-    }
+-    @Nullable
+-    @Override
+-    public IBinder onBind(Intent intent) {
+-        // TODO: Return the communication channel to the service.
+-        throw new UnsupportedOperationException("Not yet implemented");
+-    }
+-    @Override
+-    public int onStartCommand(Intent intent, int flags, int startId) {
+-        Log.d(Debug, "MyService onStartCommand");
+-        Imei = intent.getStringExtra("Imei");
+-        return super.onStartCommand(intent, flags, startId);
+-    }
+-
+-
+-}
+Index: app/src/main/res/layout/activity_division.xml
+===================================================================
+--- app/src/main/res/layout/activity_division.xml	(date 1569303612000)
++++ app/src/main/res/layout/activity_division.xml	(date 1569303612000)
+@@ -1,67 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+-    xmlns:app="http://schemas.android.com/apk/res-auto"
+-    xmlns:tools="http://schemas.android.com/tools"
+-    android:layout_width="match_parent"
+-    android:layout_height="match_parent"
+-    tools:context="ru.activity.DivisionActivity">
+-
+-    <Button
+-        android:id="@+id/button"
+-        android:layout_width="wrap_content"
+-        android:layout_height="wrap_content"
+-        android:layout_marginStart="44dp"
+-        android:layout_weight="1"
+-        android:text="@string/dump"
+-        android:textStyle="italic"
+-        app:layout_constraintBottom_toTopOf="@+id/Name"
+-        app:layout_constraintStart_toStartOf="parent"
+-        tools:ignore="MissingConstraints" />
+-
+-    <Button
+-        android:id="@+id/button2"
+-        android:layout_width="wrap_content"
+-        android:layout_height="wrap_content"
+-        android:layout_weight="1"
+-        android:text="@string/apply"
+-        android:textStyle="italic"
+-        app:layout_constraintEnd_toEndOf="parent"
+-        app:layout_constraintStart_toEndOf="@+id/button"
+-        app:layout_constraintTop_toTopOf="parent"
+-        tools:ignore="MissingConstraints" />
+-
+-    <EditText
+-        android:id="@+id/Name"
+-        android:layout_width="409dp"
+-        android:layout_height="wrap_content"
+-        android:layout_marginBottom="8dp"
+-        android:layout_weight="1"
+-        android:importantForAutofill="no"
+-        android:inputType=""
+-        app:layout_constraintBottom_toTopOf="@+id/listView1"
+-        app:layout_constraintDimensionRatio="w,1:1"
+-        app:layout_constraintEnd_toEndOf="parent"
+-        app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintTop_toBottomOf="@+id/button2"
+-        tools:ignore="LabelFor,MissingConstraints,NotSibling,UnusedAttribute"
+-        tools:layout_constraintLeft_creator="1"
+-        tools:layout_constraintRight_creator="1"
+-        tools:layout_constraintTop_creator="1" />
+-
+-    <ListView
+-        android:id="@+id/listView1"
+-        android:layout_width="0dp"
+-        android:layout_height="370dp"
+-        android:layout_marginTop="8dp"
+-        android:layout_marginBottom="8dp"
+-        android:layout_weight="1"
+-        android:choiceMode="multipleChoice"
+-        app:layout_constraintBottom_toBottomOf="parent"
+-        app:layout_constraintEnd_toEndOf="parent"
+-        app:layout_constraintHorizontal_bias="0.0"
+-        app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintTop_toBottomOf="@+id/Name"
+-        tools:ignore="MissingConstraints" />
+-
+-
+-</android.support.constraint.ConstraintLayout>
+Index: app/src/test/java/com/example/application01/ExampleUnitTest.java
+===================================================================
+--- app/src/test/java/com/example/application01/ExampleUnitTest.java	(date 1569303612000)
++++ app/src/test/java/com/example/application01/ExampleUnitTest.java	(date 1569303612000)
+@@ -1,17 +0,0 @@
+-package com.example.application01;
+-
+-import org.junit.Test;
+-
+-import static org.junit.Assert.*;
+-
+-/**
+- * Example local unit test, which will execute on the development machine (host).
+- *
+- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+- */
+-public class ExampleUnitTest {
+-    @Test
+-    public void addition_isCorrect() {
+-        assertEquals(4, 2 + 2);
+-    }
+-}
+\ No newline at end of file
+Index: app/src/main/java/ru/util/Commands.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/util/Commands.java	(date 1569303612000)
++++ app/src/main/java/ru/util/Commands.java	(date 1570364134362)
+@@ -5,14 +5,19 @@
+ 
+ import com.example.application01.R;
+ 
+-import ru.service.getDivision;
++import java.util.List;
++
++import ru.entity.Incident;
++import ru.service.GetDivision;
++import ru.service.GetIncidents;
++import ru.service.GetWorkers;
+ 
+ import static ru.Api.Constants.Debug;
+-import static ru.activity.MainActivity.et1;
+ 
+ public class Commands {
+-    Context context;
+-    String Imei;
++    private Context context;
++    private String Imei;
++    List<Incident> incidents;
+     public Commands(Context ctx) {
+         super();
+         this.context = ctx;
+@@ -22,20 +27,33 @@
+         this.Imei = Imei;
+         this.context = ctx;
+     }
+-    void commit(int i) {
++    List<Incident> commit(int i) {
+         Log.e( Debug, "commit");
+         switch (i){
+             case R.id.BT1:
+-                Log.e(Debug, "Послать" + et1.getText());
++                Log.e(Debug, "Сегодня" );
++                GetWorkers worker = new GetWorkers( context, Imei);
++                Thread t = new Thread(worker);
++                t.start();
++                while(t.isAlive()) {}
++                GetIncidents getIncidents = new GetIncidents(worker.getwork().getIddivision());
++                t = new Thread( getIncidents);
++                t.start();
++                while(t.isAlive()) {}
++                incidents = getIncidents.getIncident();
++
++             //   System.out.println(workers.getName());
++                Log.e(Debug, String.valueOf(incidents.size()));
+                 break;
+             case R.id.BT2:
+-                Log.e(Debug, "Тестировать" + et1.getText());
++                Log.e(Debug, "On week" );
+                 break;
+-            case R.id.BT7:
+-                Log.e(Debug, "Bt7");
+-                new getDivision( context).getdivision();
++            case R.id.BT3:
++                Log.e(Debug, "Setting" );
++                new GetDivision( context).getdivision();
+                 break;
+-        }
+ 
++        }
++        return incidents;
+     }
+ }
+Index: app/src/main/java/ru/util/Control.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/util/Control.java	(date 1569303612000)
++++ app/src/main/java/ru/util/Control.java	(date 1570355773424)
+@@ -3,6 +3,6 @@
+ public class Control {
+     private Command slot;
+     public Control() {        super();    }
+-    public void SetCommand(Command command) { this.slot = command;    }
++    public void SetCommand(Command slot) {        this.slot = slot;    }
+     public void press(int i){        slot.execute(i);    }
+ }
+Index: app/src/main/java/ru/entity/Incident.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/entity/Incident.java	(date 1569303612000)
++++ app/src/main/java/ru/entity/Incident.java	(date 1572173773781)
+@@ -5,14 +5,14 @@
+ 
+ import com.google.gson.annotations.SerializedName;
+ 
+-import java.sql.Timestamp;
++import ru.adapter.MyAdapterIncident;
+ 
+ public class Incident implements Parcelable {
+-    @SerializedName("typeIncident") //Тип инцидента
++    @SerializedName("typeincident") //Тип инцидента
+     private int typeincident;
+-    public int getTypeincident() {        return typeincident;    }
++    public String getTypeincident() {        return typeincident == 0 ? "Л-":"ШПД-";    }
+     public void setTypeincident(int typeincident) {        this.typeincident = typeincident;    }
+-    @SerializedName("nIncident")    //№ инцидента
++    @SerializedName("n_incident")    //№ инцидента
+     private long n_incident;
+     public long getN_incident() {        return n_incident;    }
+     public void setN_incident(long n_incident) {        this.n_incident = n_incident;    }
+@@ -28,22 +28,22 @@
+     private String declared;
+     public String getDeclared() { return declared;    }
+     public void setDeclared(String declared) {        this.declared = declared;    }
+-    @SerializedName("controlTerm")  // Контрольное время
+-    private String controlterm;
+-    public String getControlterm() {        return controlterm;    }
+-    public void setControlterm(String controlterm) {        this.controlterm = controlterm;    }
+-    @SerializedName("controlTermSla")  // Контрольное время Sla
++    @SerializedName("controlterm")  // Контрольное время
++    private long controlterm;
++    public long getControlterm() {        return controlterm;    }
++    public void setControlterm(long controlterm) {        this.controlterm = controlterm;    }
++    @SerializedName("controltermsla")  // Контрольное время Sla
+     private String controltermsla;
+     public String getControltermsla() {        return controltermsla; }
+     public void setControltermsla(String controltermsla) {        this.controltermsla = controltermsla; }
+-    @SerializedName("controlTermTask")  // Контрольное время Задачи
++    @SerializedName("controltermtask")  // Контрольное время Задачи
+     private String controltermtask;
+     public String getControltermtask() {        return controltermtask;    }
+     public void setControltermtask(String controltermtask) {        this.controltermtask = controltermtask;    }
+-    @SerializedName( "createTime")    // Время создания наряда
+-    private Timestamp createtime;
+-    public Timestamp getCreatetime() {        return createtime;    }
+-    public void setCreatetime(Timestamp createtime) {        this.createtime = createtime;    }
++    @SerializedName( "createtime")    // Время создания наряда
++    private long createtime;
++    public long getCreatetime() {        return createtime;    }
++    public void setCreatetime(long createtime) {        this.createtime = createtime;    }
+     @SerializedName("clazz") // Кл.
+     private String clazz;
+     public String getClazz() {        return clazz; }
+@@ -56,15 +56,15 @@
+     private int yield;
+     public int getYield() {        return yield;    }
+     public void setYield(int yield) {        this.yield = yield;    }
+-    @SerializedName("decisionTime") // Время Визита
+-    private Timestamp decisiontime;
+-    public Timestamp getDecisiontime() {        return decisiontime;    }
+-    public void setDecisiontime(Timestamp decisiontime) {        this.decisiontime = decisiontime;    }
+-    @SerializedName("nameClient") // Клиент
++    @SerializedName("decisiontime") // Время Визита
++    private long decisiontime;
++    public long getDecisiontime() {        return decisiontime;    }
++    public void setDecisiontime(long decisiontime) {        this.decisiontime = decisiontime;    }
++    @SerializedName("nameclient") // Клиент
+     private String nameclient;
+     public String getNameclient() {        return nameclient;    }
+     public void setNameclient(String nameclient) {        this.nameclient = nameclient;    }
+-    @SerializedName("labelOfService") // Уровень обслуживания
++    @SerializedName("labelofservice") // Уровень обслуживания
+     private int labelofservice;
+     public int getLabelofservice() {        return labelofservice;    }
+     public void setLabelofservice(int labelofservice) {        this.labelofservice = labelofservice;    }
+@@ -80,7 +80,7 @@
+     private long phone;
+     public long getPhone() {        return phone;    }
+     public void setPhone(long phone) {        this.phone = phone;    }
+-    @SerializedName( "techData") // Тех. данные
++    @SerializedName( "techdata") // Тех. данные
+     private String techdata;
+     public String getTechdata() {        return techdata;    }
+     public void setTechdata(String techdata) {        this.techdata = techdata;     }
+@@ -89,9 +89,9 @@
+     public String getComment() {        return comment;    }
+     public void setComment(String comment) {        this.comment = comment;    }
+     @SerializedName( "timeclose")    // Время закрытия
+-    private Timestamp timeclose;
+-    public Timestamp getTimeclose() {        return timeclose;    }
+-    public void setTimeclose(Timestamp timeclose) {        this.timeclose = timeclose;    }
++    private long timeclose;
++    public long getTimeclose() {        return timeclose;    }
++    public void setTimeclose(long timeclose) {        this.timeclose = timeclose;    }
+     @SerializedName("workersEntity")
+     private Workers worker; //Работник
+     public Workers getWorker() {        return worker;    }
+@@ -105,6 +105,7 @@
+     public Technology getTechnogy() {        return technogy; }
+     public void setTechnogy(Technology technogy) {        this.technogy = technogy;    }
+ 
++
+     public Incident(int typeincident) {}
+     public static final Creator<Incident> CREATOR = new Creator<Incident>() {
+         @Override
+@@ -120,14 +121,14 @@
+         idcity = in.readInt();
+         service = in.readLong();
+         declared = in.readString();
+-        controlterm = in.readString();
++        controlterm = in.readLong();
+         controltermsla = in.readString();
+         controltermtask = in.readString();
+-        createtime = Timestamp.valueOf(in.readString());
++        createtime = in.readLong();
+         clazz = in.readString();
+         repet = in.readInt();
+         yield = in.readInt();
+-        decisiontime = Timestamp.valueOf(in.readString());
++        decisiontime = in.readLong();
+         nameclient = in.readString();
+         labelofservice = in.readInt();
+         address = in.readString();
+@@ -135,7 +136,7 @@
+         phone = in.readLong();
+         techdata = in.readString();
+         comment = in.readString();
+-        timeclose = Timestamp.valueOf(in.readString());
++        timeclose = in.readLong();
+         worker = in.readParcelable(Workers.class.getClassLoader());
+         division = in.readParcelable(Division.class.getClassLoader());
+         technogy = in.readParcelable(Technology.class.getClassLoader());
+@@ -149,12 +150,13 @@
+         dest.writeInt(idcity);
+         dest.writeLong(service);
+         dest.writeString(declared);
+-        dest.writeString(controlterm);
++        dest.writeLong(controlterm);
+         dest.writeString(controltermsla);
+         dest.writeString(controltermtask);
+         dest.writeString(clazz);
+         dest.writeInt(repet);
+         dest.writeInt(yield);
++        dest.writeLong(decisiontime);
+         dest.writeString(nameclient);
+         dest.writeInt(labelofservice);
+         dest.writeString(address);
+@@ -162,8 +164,40 @@
+         dest.writeLong(phone);
+         dest.writeString(techdata);
+         dest.writeString(comment);
++        dest.writeLong(createtime);
++        dest.writeLong(timeclose);
+         dest.writeParcelable(worker, flags);
+         dest.writeParcelable(division, flags);
+         dest.writeParcelable(technogy, flags);
+     }
++
++    String color= "<font COLOR='#33B5E5'><b>";
++    @Override
++    public String toString() {
++        String term = null;
++        if(controlterm != 0) {
++            int hours = (int)((getControlterm() - MyAdapterIncident.time.getTime()) / 3600000L);
++            int min = (int) (((getControlterm() - MyAdapterIncident.time.getTime()) - (long) (hours) * 3600000L) / 60000);
++            if(hours > 0 && min > 0 )
++                term = "<font COLOR='#FF8C00'><b>" +Math.abs(hours) + " ч. " + Math.abs(min) + " мин.</b></font>";
++            else
++                term = "<font COLOR='#FF0000'><b>" +Math.abs(hours) + " ч. " + Math.abs(min) + " мин.</b></font>";
++        }
++        return  "<font COLOR='#33B5E5'><b>Логин: </b></font>" + service + "<br>" +
++                "<font COLOR='#33B5E5'><b>Заявлено: </b></font>" + declared  + "<br>" +
++                "<font COLOR='#33B5E5'><b>КС: </b></font>" + term + "<br>" +
++                "<font COLOR='#33B5E5'><b>КС (sla): </b></font>" + controltermsla + "<br>" +
++                "<font COLOR='#33B5E5'><b>КС задачи: </b></font>" + controltermtask + "<br>" +
++                "<font COLOR='#33B5E5'><b>Кл.: </b></font>" + clazz + "<br>" +
++                "<font COLOR='#33B5E5'><b>Повтор: </b></font>" + repet + "<br>" +
++                "<font COLOR='#33B5E5'><b>Доходность: </b></font>" + yield + "<br>" +
++                "<font COLOR='#33B5E5'><b>Интервал: </b></font>" + decisiontime + "<br>" +
++                "<font COLOR='#33B5E5'><b>Имя: </b></font>" + nameclient + "<br>" +
++                "<font COLOR='#33B5E5'><b>Уровень облуживания: </b></font>" + labelofservice + "<br>" +
++                "<font COLOR='#33B5E5'><b>Адрес: </b></font>" + address + " " + room + "<br>" +
++                "<font COLOR='#33B5E5'><b>Телефон: </b></font>" + phone + "<br>" +
++                "<font COLOR='#33B5E5'><b>Тех.данные: </b></font>" + techdata + "<br>" +
++                "<font COLOR='#33B5E5'><b>Комментарии: </b></font>" + comment + "<br>" +
++                "<font COLOR='#33B5E5'><b>Назначен: </b></font>" + worker.getName();
++    }
+ }
+Index: app/src/main/java/ru/entity/Division.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/entity/Division.java	(date 1569303612000)
++++ app/src/main/java/ru/entity/Division.java	(date 1572096581135)
+@@ -6,27 +6,26 @@
+ import com.google.gson.annotations.SerializedName;
+ 
+ public class Division implements Parcelable{
+-    @SerializedName("iddevision")
+-    private int iddevision;
+-    @SerializedName("namedevision")
+-    private String namedevision;
++    @SerializedName("iddivision")
++    private int iddivision;
++    @SerializedName("namedivision")
++    private String namedivision;
+     @SerializedName("idcity")
+     private int idcity;
+ 
+     public static Parcelable.Creator<Division> getCREATOR() {        return CREATOR;    }
+ 
+     private Division(Parcel in) {
+-        iddevision = in.readInt();
+-        namedevision = in.readString();
++        iddivision = in.readInt();
++        namedivision = in.readString();
+         idcity = in.readInt();
+     }
+ 
+-    public int getIddevision() {        return iddevision;    }
+-    public void setIddevision(int iddevision) {        this.iddevision = iddevision;    }
+-    public String getNamedevision() {        return namedevision;    }
+-    public void setNamedevision(String namedevision) {        this.namedevision = namedevision;    }
+-    public int getIdcity() {        return idcity;    }
+-    public void setIdcity(int idcity) {        this.idcity = idcity;    }
++    public int getIddivision() {        return iddivision;    }
++    public void setIddivision(int iddivision) {        this.iddivision = iddivision;    }
++    public String getNamedivision() {        return namedivision;    }
++    public void setNamedivision(String namedivision) {        this.namedivision = namedivision;    }
++    public int getIdcity() {        return idcity;    }    public void setIdcity(int idcity) {        this.idcity = idcity;    }
+ 
+     private static final Parcelable.Creator<Division> CREATOR = new Parcelable.Creator<Division>() {
+         @Override
+@@ -42,8 +41,8 @@
+ 
+     @Override
+     public void writeToParcel(Parcel dest, int flags) {
+-        dest.writeLong( iddevision);
+-        dest.writeString( namedevision);
++        dest.writeInt( iddivision);
++        dest.writeString( namedivision);
+         dest.writeInt( idcity);
+     }
+ }
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build.gradle	(date 1569303612000)
++++ app/build.gradle	(date 1572182079877)
+@@ -2,6 +2,8 @@
+ 
+ repositories {
+     maven { url 'https://maven.fabric.io/public' }
++    maven { url 'https://mvnrepository.com/artifact/androidx.constraintlayout/constraintlayout' }
++    maven { url "https://jitpack.io" }
+ }
+ android {
+     compileSdkVersion 28
+@@ -27,15 +29,18 @@
+ 
+ dependencies {
+     implementation fileTree(dir: 'libs', include: ['*.jar'])
++    //noinspection GradleCompatible
+     implementation 'com.android.support:appcompat-v7:28.0.0'
+     implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta2'
+-    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
+-    implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
++    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
++    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
++    implementation 'com.squareup.retrofit2:converter-moshi:2.6.2'
++    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+     implementation 'com.android.support:design:28.0.0'
++    implementation "androidx.constraintlayout:constraintlayout:1.1.3"
+     testImplementation 'junit:junit:4.13-beta-3'
+     androidTestImplementation 'com.android.support.test:runner:1.0.2'
+     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+-
+-    implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') { transitive = true; }
++    implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') { transitive = true }
+     implementation 'junit:junit:4.12'
+ }
+Index: app/src/main/java/ru/service/getDivision.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/service/getDivision.java	(date 1569303612000)
++++ app/src/main/java/ru/service/GetDivision.java	(date 1572182079746)
+@@ -16,9 +16,9 @@
+ 
+ import static ru.Api.Constants.Debug;
+ import static ru.Api.Constants.api;
+-public class getDivision {
+-    Context context;
+-    public getDivision(Context context) {
++public class GetDivision {
++    private Context context;
++    public GetDivision(Context context) {
+         this.context = context;
+     }
+     public void getdivision() {
+@@ -29,11 +29,15 @@
+                 if (response.isSuccessful()) {
+                     List<Division> divisions = response.body();
+                     String[] div = new String[divisions.size()];
+-                    for (int i = 0; i < divisions.size(); i++)
+-                        div[i] = divisions.get(i).getNamedevision();
+-                    Log.e(Debug, "div=" + String.valueOf(div.length) + div[div.length - 1]);
++                    int[] division_poz =  new int[divisions.size()];
++                    for (int i = 0; i < divisions.size(); i++) {
++                        div[i] = divisions.get(i).getNamedivision();
++                        division_poz[i] = divisions.get(i).getIddivision();
++                    }
++                    Log.e(Debug, "div=" + div.length + div[div.length - 1]);
+                     Intent intent = new Intent(context, DivisionsActivity.class);
+                     intent.putExtra("word", div);
++                    intent.putExtra("poz", division_poz);
+                     context.startActivity(intent);
+                 } else {
+                     Log.e(Debug, "error " + response.code());
+Index: app/src/main/java/ru/service/setDivision.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/service/setDivision.java	(date 1569303612000)
++++ app/src/main/java/ru/service/SetDivision.java	(date 1570343424086)
+@@ -2,23 +2,20 @@
+ 
+ import android.support.annotation.NonNull;
+ import android.util.Log;
+-
+ import java.util.ArrayList;
+ import java.util.Arrays;
+-
+ import retrofit2.Call;
+ import retrofit2.Callback;
+ import retrofit2.Response;
+ import ru.entity.Workers;
+-
+ import static ru.Api.Constants.Debug;
+ import static ru.Api.Constants.Imei;
+ import static ru.Api.Constants.api;
+ 
+-public class setDivision {
++public class SetDivision {
+     private ArrayList<Integer> division;
+     private String name;
+-    public setDivision( ArrayList<Integer> division, String name){
++    public SetDivision( ArrayList<Integer> division, String name){
+          this.division = division;
+          this.name = name;
+     }
+Index: app/src/main/java/ru/activity/SecondActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/activity/SecondActivity.java	(date 1569303612000)
++++ app/src/main/java/ru/activity/SecondActivity.java	(date 1572174692564)
+@@ -1,45 +1,28 @@
+ package ru.activity;
+ 
++import android.annotation.SuppressLint;
+ import android.os.Bundle;
+ import android.support.v7.app.AppCompatActivity;
+-import android.util.Log;
+-import android.view.View;
+-import android.widget.AdapterView;
+-import android.widget.ArrayAdapter;
+-import android.widget.ListView;
++import android.text.Html;
++import android.widget.TextView;
+ 
+ import com.example.application01.R;
+ 
+-import java.util.ArrayList;
+-
+-import static ru.Api.Constants.Debug;
+-
+ public class SecondActivity extends AppCompatActivity {
+-    ArrayList<Integer> iddivision = new ArrayList<>() ;
++
++    @SuppressLint("HandlerLeak")
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_second);
++        TextView tv = findViewById(R.id.TV1);
++        String incident = getIntent().getStringExtra("word");
++        tv.setText(Html.fromHtml(incident));
++    }
+ 
+-        String[] division = getIntent().getStringArrayExtra("word");
+-        ListView choiceList = (ListView) findViewById(R.id.listView1);
+-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, division);
+-        choiceList.setAdapter(adapter);
+-        choiceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+-            @Override
+-            public void onItemClick (AdapterView < ? > parent, View v, int position, long id){
+-                iddivision.add(position);
+-                Log.e(Debug , String.valueOf(position));
+-            }
+-        });
+-    }
+     @Override
+     protected void onStop() {
+         super.onStop();
+-
+-     //   setDivision setdivision = new setDivision( iddivision);
+-       // setdivision.setdivision();
+-
+     }
+ 
+ 
+Index: app/src/main/java/ru/activity/DivisionsActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/activity/DivisionsActivity.java	(date 1569303612000)
++++ app/src/main/java/ru/activity/DivisionsActivity.java	(date 1572182079954)
+@@ -10,13 +10,9 @@
+ import android.widget.ArrayAdapter;
+ import android.widget.EditText;
+ import android.widget.ListView;
+-
+ import com.example.application01.R;
+-
+ import java.util.ArrayList;
+-
+-import ru.service.setDivision;
+-
++import ru.service.SetDivision;
+ import static ru.Api.Constants.Debug;
+ 
+ public class DivisionsActivity extends AppCompatActivity implements View.OnClickListener{
+@@ -27,10 +23,11 @@
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_divisions);
+         String[] division = getIntent().getStringArrayExtra("word");
+-        ListView choiceList = (ListView) findViewById(R.id.listView1);
++        int [] division_poz =  getIntent().getIntArrayExtra("poz");
++        ListView choiceList = findViewById(R.id.listView2);
+         findViewById(R.id.dbutton1).setOnClickListener(this);
+         findViewById(R.id.dbutton2).setOnClickListener(this);
+-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, division);
++        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.list_item, division);
+         choiceList.setAdapter(adapter);
+ 
+         choiceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+@@ -40,14 +37,14 @@
+             public void onItemClick (AdapterView < ? > parent, View v, int position, long id){
+                 boolean status = true;
+                 for( int i = 0 ; i < iddivision.size(); i++)
+-                    if (position == iddivision.get(i)) {
++                    if (division_poz[position] == iddivision.get(i)) {
+                         iddivision.remove(i);
+                         status = false;
+                     }
+                 if( status)
+-                    iddivision.add(position);
++                    iddivision.add(division_poz[position]);
+ 
+-                iddivision.forEach( di -> Log.e(Debug ,">>" + String.valueOf(di)));
++                iddivision.forEach( di -> Log.e(Debug ,">>" + di));
+             }
+         });
+     }
+@@ -63,7 +60,7 @@
+             case R.id.dbutton1:
+                 Log.e(Debug, String.valueOf(v.getId()));
+                 EditText et = findViewById(R.id.Names);
+-                setDivision setdivision = new setDivision( iddivision, et.getText().toString() );
++                SetDivision setdivision = new SetDivision( iddivision, et.getText().toString() );
+                 setdivision.setdivision();
+                 onStop();
+                 break;
+Index: app/src/main/java/ru/activity/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/activity/MainActivity.java	(date 1569303612000)
++++ app/src/main/java/ru/activity/MainActivity.java	(date 1572162214160)
+@@ -12,78 +12,93 @@
+ import android.telephony.TelephonyManager;
+ import android.util.Log;
+ import android.view.View;
+-import android.widget.Button;
+-import android.widget.EditText;
+-import android.widget.TextView;
++import android.widget.AdapterView;
++import android.widget.ArrayAdapter;
++import android.widget.ListView;
+ 
+ import com.example.application01.R;
+ 
+-import ru.service.MyService;
+-import ru.util.CallCommand;
+-import ru.util.Commands;
++import java.util.List;
++
++import ru.adapter.MyAdapterIncident;
++import ru.entity.Incident;
++import ru.service.GetDivision;
++import ru.service.GetIncidents;
++import ru.service.GetWorkers;
+ import ru.util.Control;
+ 
+ import static ru.Api.Constants.Debug;
+-import static ru.Api.Constants.Imei;
++
+ 
+ public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+     Control control;
+-
+-    @SuppressLint("StaticFieldLeak")
+-    public static EditText et1;
++    Thread thread;
++    GetWorkers worker;
++    ListView lv;
++    List <Incident> incidents;
+     @SuppressLint({"HardwareIds", "HandlerLeak"})
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_main);
+-        control = new Control( );
+-
+-        et1 = (EditText) findViewById(R.id.ET1);
+-        TextView tv1 = (TextView) findViewById(R.id.TV1);
+-        Button bt1 = (Button) findViewById(R.id.BT1); // определение кнопки Send
+-        bt1.setOnClickListener(this);
+-        Button bt2 = (Button) findViewById(R.id.BT2); // определение кнопки Test
+-        bt2.setOnClickListener(this);
+-        Button bt7 = (Button) findViewById(R.id.BT7); // определение кнопки настройки
+-        bt7.setOnClickListener(this);
+-        Button bRest = (Button) findViewById(R.id.Rest); // определение кнопки test
+-        bRest.setOnClickListener(this);
+-        Imei = getImei();
++        // control = new Control( );
++        lv = findViewById(R.id.listView1);
++        findViewById(R.id.BT1).setOnClickListener(this::onClick); // определение кнопки Сегодня
++        findViewById(R.id.BT2).setOnClickListener(this::onClick); // определение кнопки Неделю
++        findViewById(R.id.BT3).setOnClickListener(this::onClick); // Настроить
++        worker = new GetWorkers( this, getImei());
++        thread = new Thread(worker);
++        thread.start();
+ 
+-    }
+-
+-    /**
+-     * Запускаем сервис
+-     */
+-    private void startService() {
+-        Log.e( Debug, "main->startService");
+-       startService(new Intent(this, MyService.class).putExtra("Imei", getImei()));
+-     //   startService(new Intent(this, MyService.class).putExtra("Imei", "1234567890"));
++        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
++            @Override
++            public void onItemClick (AdapterView < ? > parent, View v, int position, long id){
++                Log.e(Debug, String.valueOf(position));
++                Intent intent = new Intent( MainActivity.this, SecondActivity.class);
++                System.out.println(incidents.get(position).toString());
++                intent.putExtra("word", incidents.get(position).toString());
++                startActivity(intent);
++            }
++        });
+     }
+ 
+     @Override
+     protected void onStart() {
+         super.onStart();
+-      //  IntentFilter intentFilter = new IntentFilter(ACTION_GOT);
+-      //  registerReceiver(workReceiver, intentFilter);
+         Log.e( Debug, "main->onStart");
+-
+-  //      IntentFilter intentFilter = new IntentFilter( API_BASE_URL);
+- //       registerReceiver(receiver, intentFilter);
+-
+-    }
++   }
+     @Override
+     protected void onStop() {
+-    //    unregisterReceiver(receiver);
+-
+         super.onStop();
+-       // stopService( intent);
++
+     }
+     @Override
+     public void onClick(View v) {
+         Log.e( Debug, "onclik");
+-        control.SetCommand(new CallCommand(new Commands(this, Imei)));
+-        control.press(v.getId());
++     //   control.SetCommand(new CallCommand(new Commands(this, Imei)));
++      //  control.press(v.getId());
++        switch (v.getId()){
++            case R.id.BT1:
++
++                while(thread.isAlive()) {}
++                GetIncidents getIncidents = new GetIncidents(worker.getwork().getIddivision());
++                thread = new Thread( getIncidents);
++                thread.start();
++                while(thread.isAlive()) {}
++                incidents = getIncidents.getIncident();
++                ArrayAdapter <Incident> adapter = new MyAdapterIncident(this );
++                lv.setAdapter(adapter);
++                //   System.out.println(workers.getName());
++                Log.e(Debug, String.valueOf(incidents.size()));
++                break;
++            case R.id.BT2:
++                Log.e(Debug, "On week" );
++                break;
++            case R.id.BT3:
++                Log.e(Debug, "Setting" );
++                new GetDivision( this).getdivision();
++                break;
++        }
+     }
+     @SuppressLint("HardwareIds")
+     private String getImei() {
+Index: app/src/main/java/ru/UnitTest/DivisionTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/UnitTest/DivisionTest.java	(date 1569303612000)
++++ app/src/main/java/ru/UnitTest/DivisionTest.java	(date 1572067844401)
+@@ -33,7 +33,7 @@
+             Assert.assertNotNull(body);
+ 
+             for( Division devision: body)
+-                System.out.println(devision.getNamedevision() + " " + devision.getIddevision());
++                System.out.println(devision.getNamedivision() + " " + devision.getIddivision());
+ 
+         } catch (IOException e) {
+             e.printStackTrace();
+Index: app/src/main/java/ru/UnitTest/WorkersTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/UnitTest/WorkersTest.java	(date 1569303612000)
++++ app/src/main/java/ru/UnitTest/WorkersTest.java	(date 1569659796971)
+@@ -1,41 +1,40 @@
+ package ru.UnitTest;
+ 
+-import android.support.annotation.NonNull;
+-import android.util.Log;
+-
++import org.junit.Assert;
+ import org.junit.Test;
+ 
++import java.io.IOException;
++
+ import retrofit2.Call;
+-import retrofit2.Callback;
+ import retrofit2.Response;
+-import ru.Api.Api;
+-import ru.Api.ApiFactory;
+ import ru.entity.Workers;
+-
+-import static ru.Api.Constants.Debug;
++import static ru.Api.Constants.api;
+ 
+ public class WorkersTest {
+-    private final Api api = ApiFactory.createApi();
++  //  private final Api api = ApiFactory.createApi();
+ 
+     @Test
+     public void TestWorks() {
+ 
+-        Call<Workers> call = api.getworkerid("imei=1234567890");
+-        call.enqueue(new Callback<Workers>() {
+-            @Override
+-            public void onResponse(@NonNull Call<Workers> call,@NonNull Response<Workers> response) {
+-                if (response.isSuccessful()) {
+-                    Workers body = response.body();
+-                    System.out.println(body.getName() + body.getImei());
+-                    Log.e(Debug, body.getName() + body.getImei());
+-                }
+-            }
++        Call<Workers> call = api.getWorkerId("1234567890");
++        Response<Workers> response ;
++        try {
++            response = call.execute();
++
++            // Проверим, что запрос завершился с кодом 2XX
++            Assert.assertTrue(response.isSuccessful());
++
++            Workers body = response.body();
++
++            // Проверим, что тело запроса распарсилось нормально
++            Assert.assertNotNull(body);
++
++                System.out.println(body.getName() + " " + body.getImei());
+ 
+-            @Override
+-            public void onFailure(@NonNull Call<Workers> call,@NonNull Throwable t) {
+-                System.out.println("workers - Не найден!!!!");
+-                Log.e( Debug, "workers - Не найден!!!!");
+-            }
+-        });
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++
+     }
++
+ }
+Index: app/src/main/java/ru/UnitTest/WorkerTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/UnitTest/WorkerTest.java	(date 1569303612000)
++++ app/src/main/java/ru/UnitTest/WorkerTest.java	(date 1569659935091)
+@@ -1,16 +1,19 @@
+ package ru.UnitTest;
+ 
+ import android.support.annotation.NonNull;
++
+ import junit.framework.Assert;
++
+ import org.junit.Test;
++
+ import java.io.IOException;
+ import java.util.List;
++
+ import retrofit2.Call;
+ import retrofit2.Response;
+ import ru.Api.Api;
+ import ru.Api.ApiFactory;
+ import ru.entity.Division;
+-import ru.entity.Incident;
+ import ru.entity.Workers;
+ 
+ 
+@@ -19,19 +22,12 @@
+ 
+     @Test
+     public void Testwork()  {
+-        @NonNull Call<Workers> work = api.getworkerid("imei=1234567890");
++        @NonNull Call<Workers> work = api.getWorkerId("imei=1234567890");
+         try {
+             @NonNull Response<Workers> worker = work.execute();
+             Assert.assertTrue(worker.isSuccessful());
+             Workers body = worker.body();
+             Assert.assertNotNull(body);
+-            if( body != null)
+-                if( body.getIddivision() != null) {
+-                    Call<List<Incident>> incident = api.getworkerincident(body.getImei());
+-                    Response<List<Incident>> inc = incident.execute();
+-                    List<Incident> incidents = inc.body();
+-                    System.out.println( body.getName() + ' ' + body.getImei() + ' ' +incidents.size() );
+-                }
+ 
+         } catch (IOException e1) {
+             Call<List<Division>> division = api.getDivision();
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_main.xml	(date 1569303612000)
++++ app/src/main/res/layout/activity_main.xml	(date 1570365532305)
+@@ -1,124 +1,50 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++<LinearLayout
++    xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
++    android:orientation="vertical"
+     tools:context="ru.activity.MainActivity">
+ 
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_weight="0"
++        android:orientation="horizontal">
+ 
+     <Button
+         android:id="@+id/BT1"
+-        android:layout_width="70dp"
+-        android:layout_height="35dp"
+-        android:layout_marginLeft="12dp"
+-        android:layout_marginTop="5dp"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_weight="1"
+         android:text="@string/Send"
+-        android:textSize="8sp"
+-        app:layout_constraintLeft_toLeftOf="parent"
+-        app:layout_constraintTop_toTopOf="parent"
+-        tools:ignore="RtlHardcoded,SmallSp" />
++        tools:ignore="ButtonStyle" />
+ 
+     <Button
+         android:id="@+id/BT2"
+-        android:layout_width="70dp"
+-        android:layout_height="35dp"
+-        android:layout_marginStart="12dp"
+-        android:layout_marginTop="4dp"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_weight="1"
+         android:text="@string/test"
+-        android:textSize="8sp"
+-        app:layout_constraintStart_toEndOf="@+id/BT1"
+-        app:layout_constraintTop_toTopOf="parent"
+-        tools:layout_constraintLeft_creator="1"
+-        tools:layout_constraintRight_creator="1"
+-        android:layout_marginLeft="8dp"
+-        tools:ignore="RtlHardcoded,SmallSp" />
++        tools:ignore="ButtonStyle" />
+ 
+     <Button
+-        android:id="@+id/BT7"
+-        android:layout_width="70dp"
+-        android:layout_height="35dp"
+-        android:layout_marginStart="12dp"
+-        android:layout_marginTop="5dp"
++        android:id="@+id/BT3"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_weight="1"
+         android:text="@string/his"
+-        android:textSize="8sp"
+-        app:layout_constraintStart_toEndOf="@+id/BT2"
+-        app:layout_constraintTop_toTopOf="parent"
+-        tools:ignore="NotSibling,RtlHardcoded,SmallSp"
+-        android:layout_marginLeft="12dp" />
+-
++        tools:ignore="ButtonStyle" />
++    </LinearLayout>
+ 
+-    <Button
+-        android:id="@+id/Rest"
+-        android:layout_width="50dp"
+-        android:layout_height="35dp"
+-        android:layout_marginRight="8dp"
+-        android:layout_marginStart="12dp"
+-        android:layout_marginTop="5dp"
+-        android:text="@string/Lan"
+-        android:textSize="8sp"
+-        app:layout_constraintRight_toRightOf="parent"
+-        app:layout_constraintStart_toEndOf="@+id/BT7"
+-        app:layout_constraintTop_toTopOf="parent"
+-        tools:layout_constraintBottom_creator="1"
+-        tools:layout_constraintRight_creator="1"
+-        tools:layout_constraintTop_creator="1"
+-        android:layout_marginLeft="12dp"
+-        tools:ignore="RtlHardcoded,SmallSp" />
+-
+-
+-    <EditText
+-        android:id="@+id/ET1"
+-        android:layout_width="0dp"
+-        android:layout_height="42dp"
+-        android:layout_marginLeft="8dp"
+-        android:layout_marginRight="8dp"
+-        android:layout_marginTop="8dp"
+-        android:inputType=""
+-        app:layout_constraintHorizontal_bias="0.0"
+-        app:layout_constraintLeft_toLeftOf="parent"
+-        app:layout_constraintRight_toRightOf="parent"
+-        app:layout_constraintTop_toBottomOf="@+id/BT2"
+-        tools:ignore="LabelFor,NotSibling,UnusedAttribute"
+-        tools:layout_constraintLeft_creator="1"
+-        tools:layout_constraintRight_creator="1"
+-        tools:layout_constraintTop_creator="1"
+-        android:importantForAutofill="no" />
+-
+-    <ScrollView
+-        android:id="@+id/sv1"
+-        android:layout_width="wrap_content"
+-        android:layout_height="0dp"
+-        android:layout_margin="8dp"
+-        android:layout_marginStart="8dp"
+-        android:layout_marginTop="8dp"
+-        android:layout_marginRight="8dp"
+-        android:layout_marginBottom="7dp"
+-        android:visibility="visible"
+-        app:layout_constraintBottom_toBottomOf="parent"
+-        app:layout_constraintRight_toRightOf="parent"
+-        app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintTop_toBottomOf="@+id/ET1"
+-        tools:ignore="RtlHardcoded"
+-        tools:layout_constraintBottom_creator="1"
+-        tools:layout_constraintLeft_creator="1"
+-        tools:layout_constraintRight_creator="1"
+-        tools:layout_constraintTop_creator="1">
+-
+-        <TextView
+-            android:id="@+id/TV1"
+-            android:layout_width="match_parent"
+-            android:layout_height="wrap_content"
+-            android:layout_marginLeft="8dp"
+-            android:layout_marginBottom="8dp"
+-            android:scrollbars="horizontal"
+-            app:layout_constraintBottom_toBottomOf="parent"
+-            app:layout_constraintHorizontal_bias="0.0"
+-            app:layout_constraintLeft_toLeftOf="parent"
+-            app:layout_constraintRight_toRightOf="parent"
+-            tools:ignore="HardcodedText,RtlHardcoded" />
+-
+-    </ScrollView>
+-
++    <ListView
++        android:id="@+id/listView1"
++        android:layout_width="match_parent"
++        android:layout_height="0dp"
++        android:layout_weight="1"
++        android:choiceMode="multipleChoice"
++        tools:ignore="MissingConstraints" />
+ 
+-</android.support.constraint.ConstraintLayout>
+\ No newline at end of file
++</LinearLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_second.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_second.xml	(date 1569303612000)
++++ app/src/main/res/layout/activity_second.xml	(date 1570452779515)
+@@ -1,51 +1,27 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+-    xmlns:app="http://schemas.android.com/apk/res-auto"
++<LinearLayout
++    xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+-    android:orientation="vertical"
++    android:id="@+id/layout"
+     tools:context="ru.activity.SecondActivity">
+ 
+-    <LinearLayout
++    <ScrollView
++        android:id="@+id/sv2"
+         android:layout_width="match_parent"
+-        android:layout_height="match_parent"
+-        android:layout_weight="3"
+-        android:orientation="horizontal" >
+-
+-        <Button
+-            android:id="@+id/button1"
+-            android:layout_width="wrap_content"
+-            android:layout_height="wrap_content"
+-            android:layout_weight="1"
+-            android:text="@string/apply"
+-            tools:ignore="ButtonStyle,NestedWeights" />
+-
+-        <Button
+-            android:id="@+id/button2"
+-            android:layout_width="wrap_content"
+-            android:layout_height="wrap_content"
+-            android:layout_weight="1"
+-            android:text="@string/dump"
+-            tools:ignore="ButtonStyle" />
++        android:layout_height="wrap_content"
++        tools:ignore="UselessParent">
+ 
+-    </LinearLayout>
+-
+-    <EditText
+-        android:id="@+id/Names"
+-        android:layout_width="match_parent"
+-        android:layout_height="match_parent"
+-        android:layout_weight="3"
+-        android:autofillHints=""
+-        android:inputType=""
+-        tools:ignore="LabelFor,MissingConstraints,NotSibling,UnusedAttribute" />
+-
+-    <ListView
+-        android:id="@+id/listView1"
+-        android:layout_weight="1"
+-        android:layout_width="match_parent"
+-        android:layout_height="wrap_content"
+-        android:choiceMode="multipleChoice"
+-        tools:ignore="MissingConstraints" />
+-</LinearLayout>
++        <TextView
++            android:id="@+id/TV1"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:layout_marginBottom="8dp"
++            android:layout_marginLeft="8dp"
++            android:scrollbars="horizontal"
++            tools:ignore="HardcodedText,RtlHardcoded" />
++    </ScrollView>
++
++</LinearLayout >
+ 
+Index: app/src/main/res/layout/activity_divisions.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_divisions.xml	(date 1569303612000)
++++ app/src/main/res/layout/activity_divisions.xml	(date 1570016197660)
+@@ -9,8 +9,8 @@
+ 
+     <LinearLayout
+         android:layout_width="match_parent"
+-        android:layout_height="0dp"
+-        android:layout_weight="1"
++        android:layout_height="wrap_content"
++        android:layout_weight="0"
+         android:orientation="horizontal">
+ 
+         <Button
+@@ -34,18 +34,18 @@
+     <EditText
+         android:id="@+id/Names"
+         android:layout_width="match_parent"
+-        android:layout_height="2dp"
+-        android:layout_weight="1"
++        android:layout_height="wrap_content"
++        android:layout_weight="0"
+         android:autofillHints=""
+         android:inputType=""
+         tools:targetApi="o"
+         tools:ignore="LabelFor" />
+ 
+     <ListView
+-        android:id="@+id/listView1"
++        android:id="@+id/listView2"
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+-        android:layout_weight="6"
++        android:layout_weight="1"
+         android:choiceMode="multipleChoice"
+         tools:ignore="MissingConstraints" />
+ </LinearLayout>
+Index: app/src/main/res/values/colors.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/colors.xml	(date 1569303612000)
++++ app/src/main/res/values/colors.xml	(date 1572174225352)
+@@ -3,4 +3,12 @@
+     <color name="colorPrimary">#008577</color>
+     <color name="colorPrimaryDark">#00574B</color>
+     <color name="colorAccent">#D81B60</color>
++    <color name="reddivider">#FF0000</color>
++    <color name="RED">#FF0000</color>
++    <color name="Green">#008000</color>
++    <color name="Blue">#0000FF</color>
++    <color name="Yellow">#FFFF00</color>	
++    <color name="DarkSlateGray">#2F4F4F</color>
++    <color name="White">#FFFFFF</color>
++    <dimen name="twodp">2dp</dimen>
+ </resources>
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/strings.xml	(date 1569303612000)
++++ app/src/main/res/values/strings.xml	(date 1569647879174)
+@@ -1,8 +1,8 @@
+ <resources>
+     <string name="app_name">ПАО Ростелеком(v.6.3)-%1$s</string>
+-    <string name="test">Тест</string>
++    <string name="test">За неделю</string>
+     <string name="his">Настройки</string>
+-    <string name="Send">Послать</string>
++    <string name="Send">Сегодня</string>
+     <string name="Repet">Повторить</string>
+     <string name="Ok">Принять в работу</string>
+     <string name="change">Изменить профиль</string>
+Index: app/src/main/res/values/styles.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/styles.xml	(date 1569303612000)
++++ app/src/main/res/values/styles.xml	(date 1569999388975)
+@@ -5,7 +5,7 @@
+         <!-- Customize your theme here. -->
+         <item name="colorPrimary">@color/colorPrimary</item>
+         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+-        <item name="colorAccent">@color/colorAccent</item>
++        <item name="colorAccent">@color/Green</item>
+     </style>
+ 
+     <style name="AppTheme.NoActionBar">
+Index: build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- build.gradle	(date 1569303612000)
++++ build.gradle	(date 1570090263618)
+@@ -7,7 +7,7 @@
+         
+     }
+     dependencies {
+-        classpath 'com.android.tools.build:gradle:3.5.0'
++        classpath 'com.android.tools.build:gradle:3.5.1'
+         
+         // NOTE: Do not place your application dependencies here; they belong
+         // in the individual module build.gradle files
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/AndroidManifest.xml	(date 1569303612000)
++++ app/src/main/AndroidManifest.xml	(date 1570344398661)
+@@ -13,7 +13,6 @@
+         android:theme="@style/AppTheme"
+         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+         <activity android:name="ru.activity.DivisionsActivity"></activity>
+-        <activity android:name="ru.activity.DivisionActivity" />
+         <activity
+             android:name="ru.activity.SecondActivity"
+             android:label="@string/app_name"
+@@ -26,11 +25,6 @@
+             </intent-filter>
+         </activity>
+ 
+-        <service
+-            android:name="ru.service.MyService"
+-            android:enabled="true"
+-            android:exported="true"
+-            tools:ignore="ExportedService" />
+     </application>
+     <uses-permission android:name="android.permission.INTERNET" />
+     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(date 1569303612000)
++++ .idea/misc.xml	(date 1569419846881)
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/vcs.xml	(date 1569303612000)
++++ .idea/vcs.xml	(date 1569419823196)
+Index: app/src/main/java/ru/Api/Api.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/Api/Api.java	(date 1569303612000)
++++ app/src/main/java/ru/Api/Api.java	(date 1572175784326)
+@@ -10,6 +10,7 @@
+ import retrofit2.http.Path;
+ import ru.entity.Division;
+ import ru.entity.Incident;
++import ru.entity.Result;
+ import ru.entity.Workers;
+ 
+ /**
+@@ -17,18 +18,17 @@
+  */
+ 
+ public interface Api {
++    @GET("/Division")        Call<List<Division>> getDivision();
+     @FormUrlEncoded
+-    @POST("Workers/imei")   Call <Workers> getworkerid(@Field("imei") String imei);
+-    //@Multipart
+-    //@POST("Workers/imei{imei}")   Call <Workers> getworkerid(@Path("imei") String imei);
+-    //@POST("Workers/imei={imei}/iddivision={iddivision}")   Call <Workers> getworkerid(@Path("imei") String imei, @Path("iddivision") Integer[] iddivision);
+-    @GET("Division")        Call<List<Division>> getDivision();
++    @POST("/Workers/imei")   Call<Workers> getWorkerId(@Field("imei") String imei);
+     @FormUrlEncoded
+-    @POST("Worker/add")  Call<Workers> addWorker(  @Field("name") String name, @Field("imei") String imei, @Field("iddivision") String iddivision);
+-    @FormUrlEncoded
+-    @POST("test")  Call<Workers> ad( @Field("name") String name, @Field("imei") String imei);
+-    @GET("Worker/{imei}")   Call<List<Incident>> getworkerincident(@Path("imei") String imei    );
+-    @GET("Division/ids={id}/imei={imei}")  Call<Workers> getIddivision(@Path("id") String id, @Path("imei") String imei);
++    @POST("/Worker/add")  Call<Workers> addWorker(  @Field("name") String name, @Field("imei") String imei, @Field("iddivision") String iddivision);
++    @GET("Incident/{iddivision}")   Call<List<Incident>> getIncident(@Path("iddivision") String iddivision  );
+ 
++    @GET("Incident/burn/{iddivision}")   Call<List<Incident>> incidentListBurn(@Path("iddivision") String iddivision  );
++    @GET("Result/{iddivision}")   Call<List<Result>> resultList(@Path("iddivision") String iddivision  );
++
++    @GET("Incidentin4hour/{iddivision}")   Call<List<Incident>> getIncidentIn4Hour(@Path("iddivision") String iddivision  );
++    @GET("/IncidentBurning/{iddivision}")   Call<List<Incident>> getIncident1Burning(@Path("iddivision") String iddivision  );
+ 
+ }
+\ No newline at end of file
+Index: app/src/main/java/ru/Api/Constants.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/ru/Api/Constants.java	(date 1569303612000)
++++ app/src/main/java/ru/Api/Constants.java	(date 1572161217987)
+@@ -5,7 +5,7 @@
+  * Константы для API
+  */
+ public class Constants {
+-    static final String API_BASE_URL = "http://192.168.100.6:8081/api/";
++    static final String API_BASE_URL = "http://192.168.100.6:8082/";
+     public static final Api api = ApiFactory.createApi();
+     public static final String Debug = "DEbug";
+     public static String Imei;

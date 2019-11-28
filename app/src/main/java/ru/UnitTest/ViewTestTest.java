@@ -33,9 +33,6 @@ public class ViewTestTest {
             // Проверим, что тело запроса распарсилось нормально
             Assert.assertNotNull(bod);
 
-            //   bod.forEach( inc -> System.out.println( inc.getN_incident() + "   ->" +  inc.getControlterm() ));
-
-            //   body.forEach( inc -> System.out.println( inc.getN_incident()));
             System.out.println(bod.toString());
         } catch (IOException e) {
             e.printStackTrace();

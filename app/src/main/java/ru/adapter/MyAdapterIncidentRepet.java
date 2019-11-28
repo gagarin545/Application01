@@ -10,16 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-
 import com.example.application01.R;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static ru.service.GetIncidentRepet.incidents;
+import static ru.activity.MainActivity.incidents;
 
 public class MyAdapterIncidentRepet extends ArrayAdapter implements ListAdapter {
-
 
     public MyAdapterIncidentRepet(@NonNull Context context) {
         super(context, R.layout.list_item, incidents);

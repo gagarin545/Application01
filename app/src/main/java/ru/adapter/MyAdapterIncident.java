@@ -16,15 +16,13 @@ import com.example.application01.R;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
-import static ru.service.GetIncidents.incidents;
+import static ru.activity.MainActivity.incidents;
 
 public class MyAdapterIncident extends ArrayAdapter implements ListAdapter {
     public static Timestamp time = new Timestamp(Calendar.getInstance().getTimeInMillis());
 
-
     public MyAdapterIncident(@NonNull Context context) {
         super(context, R.layout.list_item, incidents);
-
     }
 
     @SuppressLint("ResourceAsColor")

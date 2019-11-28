@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.example.application01.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import static ru.service.GetIncidentListDay.incidents;
+import static ru.activity.MainActivity.incidents;
 
 public class MyAdapterIncidentList extends ArrayAdapter implements ListAdapter {
 
