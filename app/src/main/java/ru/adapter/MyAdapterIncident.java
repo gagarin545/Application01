@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import com.example.application01.R;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import static ru.activity.MainActivity.incidents;
@@ -32,18 +35,21 @@ public class MyAdapterIncident extends ArrayAdapter implements ListAdapter {
 //        @SuppressLint("SimpleDateFormat") Date controlTerm = null;
         int hours = 0 , min = 0;
         String item;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(incidents.get(position).getDecisiontime());
+        DateFormat df = new SimpleDateFormat("HH:mm dd.MM.yyy");
         if( incidents.get(position).getControlterm() > 0) {
             hours = (int)((incidents.get(position).getControlterm() - time.getTime()) / 3600000L);
             min = (int) (((incidents.get(position).getControlterm() - time.getTime()) - (long) (hours) * 3600000L) / 60000);
-            item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + " " + Math.abs(hours) + "ч." + Math.abs(min) + "мин." + " " + incidents.get(position).getClazz() + " " + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom();
+            item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + "<small><b>(" + Math.abs(hours) + "ч." + Math.abs(min) + "мин." + ")</b></small> <Em> c " + df.format(incidents.get(position).getDecisiontime()) + " </em>" + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom() + ' ' + incidents.get(position).getClazz();
         } else
-            item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + " " + incidents.get(position).getClazz() + " " + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom();
+            item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + " " + incidents.get(position).getClazz() + " " + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom() ;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()) .inflate(android.R.layout.simple_list_item_2, null);
         }
         TextView tv = convertView.findViewById(android.R.id.text1);
-        tv.setText(item);
+        tv.setText(Html.fromHtml(item));
         tv.setTextColor( Color.BLUE);
         if (hours < 5)  tv.setTextColor(Color.parseColor("#FF8C00"));
         if (min < 0)    tv.setTextColor(Color.RED);

@@ -22,10 +22,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name="ru.activity.SecondActivity"></activity>
+        <activity android:name="ru.activity.SecondActivity" />
         <activity
             android:name="ru.activity.DivisionsActivity"
-            android:label="@string/name"></activity>
+            android:label="@string/name" />
         <activity android:name="ru.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

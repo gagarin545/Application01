@@ -12,5 +12,6 @@
     <string name="apply">применить</string>
     <string name="title_activity_second">SecondActivity</string>
     <string name="title_activity_division">DivisionActivity</string>
+    <string name="title_activity_test">TestActivity</string>
 </resources>
 

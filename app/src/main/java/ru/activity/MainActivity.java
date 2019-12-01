@@ -23,44 +23,33 @@ import com.example.application01.R;
 import com.github.mikephil.charting.data.BarData;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import ru.adapter.ChartDataAdapter;
 import ru.adapter.MyAdapterIncident;
 import ru.adapter.MyAdapterIncidentList;
 import ru.adapter.MyAdapterIncidentRepet;
 import ru.entity.Incident;
-import ru.entity.Result;
-import ru.entity.WorkerResult;
+import ru.entity.ViewTest;
 import ru.entity.Workers;
 import ru.service.GetDivision;
-import ru.service.GetIncident;
-import ru.service.GetIncidentListDay;
-import ru.service.GetIncidentRepet;
-import ru.service.GetResult;
-import ru.service.GetWorker;
-import ru.service.GetWorkerResult;
-import ru.util.GenerateData;
 
 import static ru.Api.Constants.Imei;
 import static ru.Api.Constants.change;
+import static ru.util.GetExecut.getIncident;
+import static ru.util.GetExecut.getIncidentNday;
+import static ru.util.GetExecut.getIncidentRepet;
+import static ru.util.GetExecut.getOnOrder;
+import static ru.util.GetExecut.getWeekOnWorker;
+import static ru.util.GetExecut.getWorker;
 
 public class MainActivity extends AppCompatActivity {
     public static List <Incident> incidents;
-    public static ExecutorService executor = Executors.newFixedThreadPool(2);
     static Workers workers;
-    Future<List<Incident>> future;
     ChartDataAdapter chartDataAdapter;
     MyAdapterIncident adapter;
     ListView lv;
-    BarData date;
     Toast toast;
-    int day = 30;
 
     @SuppressLint({"HardwareIds", "HandlerLeak"})
     @Override
@@ -69,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         lv = findViewById(R.id.listView1);
         Imei = getImei();
-
-        getWorker();
+        workers = getWorker();
+        Log.e("DEbug", "--" + workers.getName());
         if(workers != null) {
             setTitle(Html.fromHtml("<small><b>" + String.format(getString(R.string.app_name), workers.getName()) + "</font>"));
         }
@@ -89,12 +78,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if( change) getWorker();
    }
-    @Override
+   @Override
+   protected void onResume() {
+       super.onResume();
+       if( change) getWorker();
+   }
+   @Override
     protected void onStop() {
         super.onStop();
-        executor.shutdown();
     }
 
     @Override
@@ -102,65 +94,39 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+    @SuppressLint("NewApi")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         ArrayList<BarData> list = new ArrayList<>();
         if( change) getWorker();
         switch (item.getItemId()) {
             case R.id.today:
-                try {
-                    future = executor.submit( (new GetIncident(workers.getIddivision())).task);
-                     incidents = future.get();
-                }  catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
+                incidents = getIncident(workers.getIddivision());
                 toast = Toast.makeText(this, "Нарядов " + incidents.size() , Toast.LENGTH_LONG);
                 toast.show();
                 adapter = new MyAdapterIncident(this);
                 lv.setAdapter(adapter);
                 return true;
             case R.id.weekOnOrder:
-                Future <List<Result>> future_res = executor.submit((new GetResult(workers.getIddivision())).task);
-                try {
-                    for(int i :workers.getIddivision())
-                        if((date = new GenerateData().getBarData(future_res.get(), i)) != null)
-                            list.add( date);
-                } catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
-                chartDataAdapter = new ChartDataAdapter(getApplicationContext(), list);
+                chartDataAdapter = new ChartDataAdapter(getApplicationContext(), getOnOrder(workers.getIddivision()));
                 lv.setAdapter(chartDataAdapter);
                 return true;
             case R.id.weekOnWorkers:
-                list = new ArrayList<>();
-                Calendar calendar = Calendar.getInstance();
-                try {
-                    Future <List<WorkerResult>> future_reswork = executor.submit((new GetWorkerResult(workers.getIddivision())).task);
-                    List<WorkerResult> workerResult = future_reswork.get();
-                    calendar.setTimeInMillis(workerResult.get(0).getTimeclose());
-                    for(int i=0; i < 7; i++) {
-                        if ((date = new GenerateData().getBarData(workerResult, calendar.getTimeInMillis())) != null)
-                            list.add(date);
-                        calendar.add(Calendar.DAY_OF_YEAR, 1);
-                    }
-                } catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
-                chartDataAdapter = new ChartDataAdapter(getApplicationContext(), list);
+                chartDataAdapter = new ChartDataAdapter(getApplicationContext(), getWeekOnWorker(workers.getIddivision()));
                 lv.setAdapter(chartDataAdapter);
                 return true;
             case R.id.Setting:
                 new GetDivision( this).getdivision();
                 return true;
             case R.id.Nday:
-                try {
-                    future = executor.submit(new GetIncidentListDay(workers.getIddivision(), day).task);
-                    incidents = future.get();
-                } catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
+                incidents =  getIncidentNday(workers.getIddivision());
                 toast = Toast.makeText(this, "Нарядов " + incidents.size() , Toast.LENGTH_LONG);
                 toast.show();
                 MyAdapterIncidentList adapters = new MyAdapterIncidentList(this );
                 lv.setAdapter(adapters);
                 return true;
             case R.id.Repet:
-                try {
-                    future = executor.submit( (new GetIncidentRepet(workers.getIddivision())).task);
-                    incidents = future.get();
-                } catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
+                incidents =  getIncidentRepet(workers.getIddivision());
                 toast = Toast.makeText(this, "Нарядов " + incidents.size() , Toast.LENGTH_LONG);
                 toast.show();
                 MyAdapterIncidentRepet adapterRepet = new MyAdapterIncidentRepet(this );
@@ -171,13 +137,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void getWorker() {
-        Future<Workers> futurework = executor.submit( new GetWorker(  Imei).task);
-        try {
-            workers = futurework.get();
-            change = false;
-        } catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
+    ViewTest getTest( String incident) {
+        ViewTest viewTest = null;
+  //      Future<ViewTest> future_test = executor.submit( new GetTest( incident).task);
+   //     try {
+    //        viewTest = future_test.get();
+     //       Log.e("Debug",  "test");
+      //      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+       //         Arrays.stream(new ViewTest[]{viewTest}).forEach(x-> System.out.println(x.toString()));
+        //    }
+     //   } catch (ExecutionException | InterruptedException e) { e.printStackTrace();                }
+      //  Log.e("Debug", String.valueOf(executor.getActiveCount()));
+        return  viewTest;
     }
+
     @SuppressLint("HardwareIds")
     private String getImei() {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);

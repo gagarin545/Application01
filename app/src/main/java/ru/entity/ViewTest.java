@@ -1,5 +1,6 @@
 package ru.entity;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
@@ -214,46 +215,46 @@ public class ViewTest  implements Parcelable {
     public String getMacAddress() {        return macAddress;    }
     public String getVlans() {        return vlans;    }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public String toString() {
-        return "ViewTest{" +
-                "service=" + service +
-                ", ip_address='" + ip_address + '\'' +
-                ", port='" + port + '\'' +
-                ", slot='" + slot + '\'' +
-                ", ont='" + ont + '\'' +
-                ", status='" + status + '\'' +
-                ", profil='" + profil + '\'' +
-                ", init_count='" + init_count + '\'' +
-                ", snr_out=" + snr_out +
-                ", snr_in=" + snr_in +
-                ", l_Attenuation_out=" + l_Attenuation_out +
-                ", l_Attenuation_in=" + l_Attenuation_in +
-                ", s_Attenuation_out=" + s_Attenuation_out +
-                ", s_Attenuation_in=" + s_Attenuation_in +
-                ", power_out=" + power_out +
-                ", power_in=" + power_in +
-                ", v_previous_out=" + v_previous_out +
-                ", v_previous_in=" + v_previous_in +
-                ", v_current_out=" + v_current_out +
-                ", v_current_in=" + v_current_in +
-                ", v_max_out=" + v_max_out +
-                ", v_max_in=" + v_max_in +
-                ", description='" + description + '\'' +
-                ", sn='" + sn + '\'' +
-                ", passwd='" + passwd + '\'' +
-                ", ontVersion='" + ontVersion + '\'' +
-                ", distance='" + distance + '\'' +
-                ", status_port1='" + status_port1 + '\'' +
-                ", status_port2='" + status_port2 + '\'' +
-                ", status_port3='" + status_port3 + '\'' +
-                ", status_port4='" + status_port4 + '\'' +
-                ", V_port1='" + V_port1 + '\'' +
-                ", V_port2='" + V_port2 + '\'' +
-                ", V_port3='" + V_port3 + '\'' +
-                ", V_port4='" + V_port4 + '\'' +
-                ", macAddress='" + macAddress + '\'' +
-                ", vlans='" + vlans + '\'' +
-                '}';
+        String color= "<font COLOR='#33B5E5'><b>", b = ": </b></font>";
+
+
+        if( profil != null)
+            return  color + "логин" + b + service + "<br>" +
+                    color + "ip_адрес" + b + ip_address + "<br>" +
+                    color + "слот" + b + port + "<br>" +
+                    color + "порт" + b + slot + "<br>" +
+                    color + "статус" + b + (Integer.valueOf(status)>0 ? "On":"Off") + "<br>" +
+                    color + "Профиль" + b + profil + "<br>" +
+                    color + "Инициялизации" + b + init_count + "<br>" +
+                    color + "Сигнал/шум" + b  + snr_out + " " + snr_in + "<br>" +
+                    color + "Линия зат." + b  + String.format("%.2f  %.2f",l_Attenuation_in, l_Attenuation_out) + "<br>" +
+                    color + "Сигнал зат." + b  + String.format("%.2f  %.2f",s_Attenuation_in, s_Attenuation_out) + "<br>" +
+                    color + "Power" +  b + String.format("%.2f %.2f",power_in,power_out) + "<br>" +
+                    color + "Пред.скорость" + b  +String.format("%.2f  %.2f",v_previous_in, v_previous_out ) + "<br>" +
+                    color + "Тек.скорость" + b  + String.format("%.2f  %.2f", v_current_in,v_current_out) + "<br>" +
+                    color + "Max скорость" + b  + String.format("%.2f  %.2f",v_max_in,v_max_out) + "<br>"+
+                    color + "Vlan" + b  + vlans;
+        else
+            return  color + "логин" + b + service + "<br>" +
+                    color + "ip_адрес" + b + ip_address + "<br>" +
+                    color + "слот" + b + slot + "<br>" +
+                    color + "порт" + b + port + "<br>" +
+                    color + "онт" + b + ont + "<br>" +
+                    color + "статус" + b + (Integer.valueOf(status)>0 ? "On":"Off") + "<br>" +
+                    color + "Описание" + b  + description + "<br>" +
+                    color + "С.номер" + b  + sn + "<br>" +
+                    color + "К.слово" + b  + passwd + "<br>" +
+                    color + "Версия онт" + b  + ontVersion + "<br>" +
+                    color + "Расстояние" + b  + distance + "<br>" +
+                    color + "Power" +  b + String.format("%.2f", power_in) + "<br>" +
+                    color + "порт(1)" + b  + (Integer.valueOf(status_port1)>0 ? "On":"Off") + "<br>" +
+                    color + "порт(2)" + b  + (Integer.valueOf(status_port1)>0 ? "On":"Off") + "<br>" +
+                    color + "порт(3)" + b  + (Integer.valueOf(status_port1)>0 ? "On":"Off") + "<br>" +
+                    color + "порт(4)" + b  + (Integer.valueOf(status_port1)>0 ? "On":"Off") + "<br>" +
+                    color + "macAddress" + b  + macAddress +  "<br>" +
+                    color + "Vlan" + b  + vlans;
     }
 }

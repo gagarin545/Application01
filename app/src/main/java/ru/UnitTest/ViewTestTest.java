@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -20,22 +21,20 @@ public class ViewTestTest {
     @SuppressLint("NewApi")
     @Test
     public void TestDiv()  {
-        long inc = 9633720L;
+        //String incident = "9633720";
+        //String incident = "9666819";
+        String incident = "9678887";
 
-        Call<ViewTest> cal = api.gettest(String.valueOf(inc));
-        Response<ViewTest> respons ;
+        Call<ViewTest> result = api.gettest( incident);
         try {
-            respons = cal.execute();
-            // Проверим, что запрос завершился с кодом 2XX
-            Assert.assertTrue(respons.isSuccessful());
-            ViewTest bod = respons.body();
-
-            // Проверим, что тело запроса распарсилось нормально
-            Assert.assertNotNull(bod);
-
-            System.out.println(bod.toString());
+            Response<ViewTest> response = result.execute();
+            Assert.assertTrue(response.isSuccessful());
+            ViewTest viewTest = response.body();
+            Arrays.stream(new ViewTest[]{viewTest}).forEach(x-> System.out.println(x.toString()));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
     }
 }

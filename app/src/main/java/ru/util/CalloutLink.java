@@ -11,13 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
-import ru.entity.ViewTest;
-import ru.service.GetTest;
-
-import static ru.activity.MainActivity.executor;
+import ru.activity.SecondActivity;
 
 public class CalloutLink extends ClickableSpan {
     String debug = "DEbug";
@@ -43,19 +37,10 @@ public class CalloutLink extends ClickableSpan {
 
         switch (widget.getId() ) {
             case  2131230734:
-                num_incident =  s.subSequence(s.getSpanStart(this), s.getSpanEnd(this)).toString();
                 Log.e(debug, "Link:0 " + i + " " + s.subSequence(s.getSpanStart(this), s.getSpanEnd(this)).toString());
-                Future <ViewTest> future_test = executor.submit( new GetTest( num_incident).task);
-                try {
-                    ViewTest viewTest = future_test.get();
-                    Log.e(debug, "Link:1 " + i + " " + viewTest.getService());
-                } catch (ExecutionException | InterruptedException e) { e.printStackTrace();                }
-
-
-
-          //      Intent intent = new Intent(context, thirdActivity.class);
-           //     intent.putExtra("word", s.subSequence(s.getSpanStart(this), s.getSpanEnd(this)).toString());
-            //    context.startActivity(intent);
+                Intent intent = new Intent(context, SecondActivity.class);
+                intent.putExtra("test", s.subSequence(s.getSpanStart(this), s.getSpanEnd(this)).toString());
+                context.startActivity(intent);
                 break;
             case 2131230742:
           //  case 2131230738:
