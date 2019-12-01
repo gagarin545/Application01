@@ -41,9 +41,9 @@ public class MyAdapterIncident extends ArrayAdapter implements ListAdapter {
         if( incidents.get(position).getControlterm() > 0) {
             hours = (int)((incidents.get(position).getControlterm() - time.getTime()) / 3600000L);
             min = (int) (((incidents.get(position).getControlterm() - time.getTime()) - (long) (hours) * 3600000L) / 60000);
-            item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + "<small><b>(" + Math.abs(hours) + "ч." + Math.abs(min) + "мин." + ")</b></small> <Em> c " + df.format(incidents.get(position).getDecisiontime()) + " </em>" + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom() + ' ' + incidents.get(position).getClazz();
+            item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + "<small><b>(" + Math.abs(hours) + "ч." + Math.abs(min) + "мин." + ")</b></small> <Em> c " + df.format(incidents.get(position).getDecisiontime()) + " </em>" + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom() + " <small>"  + incidents.get(position).getClazz() + "</small>";
         } else
-            item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + " " + incidents.get(position).getClazz() + " " + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom() ;
+            item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() +  "<Em> c " + df.format(incidents.get(position).getDecisiontime()) + " </em> "  + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom() + " <small>"  + incidents.get(position).getClazz() + "</small>" ;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()) .inflate(android.R.layout.simple_list_item_2, null);
