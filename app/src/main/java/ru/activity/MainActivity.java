@@ -52,10 +52,11 @@ public class MainActivity extends AppCompatActivity {
         lv = findViewById(R.id.listView1);
         Imei = getImei();
         workers = getWorker( this);
-        Log.e("DEbug", "--" + workers.getName());
-        if(workers != null) {
+    //    Log.e("DEbug", "--" + workers.getName());
+        if(workers != null)
             setTitle(Html.fromHtml("<small><b>" + String.format(getString(R.string.app_name), workers.getName()) + "</font>"));
-        }
+        else
+            new GetDivision( this).getdivision();
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick (AdapterView < ? > parent, View v, int position, long id){

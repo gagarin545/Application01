@@ -15,7 +15,6 @@ public class GetIncident {
     public GetIncident( int[] iddivision) {
         this.iddivision = iddivision;
     }
-
         public Callable task = () -> {
             Call<List<Incident>> incidentBurning = api.getIncident(Arrays.toString(iddivision).replace("[", "").replace("]", ""));
             Response<List<Incident>> response;

@@ -12,12 +12,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import ru.entity.Division;
 import ru.entity.Incident;
 import ru.entity.Result;
 import ru.entity.ViewTest;
 import ru.entity.WorkerResult;
 import ru.entity.Workers;
 import ru.service.GetDivision;
+import ru.service.GetDivisions;
 import ru.service.GetIncident;
 import ru.service.GetIncidentListDay;
 import ru.service.GetIncidentRepet;
@@ -38,6 +40,10 @@ public class GetExecut {
     private static List <Incident> incidents;
     public GetExecut(List<Incident> incidents) {        GetExecut.incidents = incidents;    }
 
+    public static List<Division> getDivision() throws ExecutionException, InterruptedException {
+        Future<List<Division>> futureDivision = executor.submit( new GetDivisions().task);
+        return futureDivision.get();
+    }
     public static Workers getWorker(Context context) {
         Workers workers = null;
         Future<Workers> futurework = executor.submit( new GetWorker(  Imei).task);
