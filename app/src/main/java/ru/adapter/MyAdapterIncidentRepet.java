@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,18 +25,19 @@ public class MyAdapterIncidentRepet extends ArrayAdapter implements ListAdapter 
     @SuppressLint("ResourceAsColor")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+        String text= " ";
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm dd.MM.yy");
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()) .inflate(android.R.layout.simple_list_item_2, null);
         }
         TextView tv = convertView.findViewById(android.R.id.text1);
         if( incidents.get(position).getControlterm() > 0) {
             if (((incidents.get(position).getControlterm() + 7200000L) - incidents.get(position).getDecisiontime()) > 0)
-                tv.setTextColor(Color.parseColor("#33BBFF"));
+                text = "<font color='#33BBFF'><small><b> (до " + format.format(new Date(incidents.get(position).getDecisiontime())) + ") </b></font></small>";
             else
-                tv.setTextColor(Color.parseColor("#FF4019"));
+                text = "<font color='#FF4019'><small><b> (до " + format.format(new Date(incidents.get(position).getDecisiontime())) + ") </b></font></small>";
         }
-        tv.setText(incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + " " + format.format(new Date(incidents.get(position).getDecisiontime())) + " " + incidents.get(position).getClazz() + " " + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom());
+        tv.setText(Html.fromHtml(incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + text  + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom() + "<small>(" + incidents.get(position).getClazz() + ")</small>"));
         if (incidents.get(position).getClazz().contains("ЮЛ"))  tv.setTextColor(Color.parseColor("#D2691E"));
         return convertView;
     }

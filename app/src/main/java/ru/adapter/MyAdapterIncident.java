@@ -32,27 +32,23 @@ public class MyAdapterIncident extends ArrayAdapter implements ListAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-//        @SuppressLint("SimpleDateFormat") Date controlTerm = null;
         int hours = 0 , min = 0;
-        String item;
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(incidents.get(position).getDecisiontime());
-        DateFormat df = new SimpleDateFormat("HH:mm dd.MM.yyy");
+        String item, text = " " ;
+        DateFormat df = new SimpleDateFormat("HH:mm dd.mm.yy");
+        System.out.println(df.format(incidents.get(position).getDecisiontime()));
         if( incidents.get(position).getControlterm() > 0) {
-            hours = (int)((incidents.get(position).getControlterm() - time.getTime()) / 3600000L);
+            hours = (int) ((incidents.get(position).getControlterm() - time.getTime()) / 3600000L);
             min = (int) (((incidents.get(position).getControlterm() - time.getTime()) - (long) (hours) * 3600000L) / 60000);
-            item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + "<small><b>(" + Math.abs(hours) + "ч." + Math.abs(min) + "мин." + ")</b></small> <Em> c " + df.format(incidents.get(position).getDecisiontime()) + " </em>" + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom() + " <small>"  + incidents.get(position).getClazz() + "</small>";
-        } else
-            item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() +  "<Em> c " + df.format(incidents.get(position).getDecisiontime()) + " </em> "  + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom() + " <small>"  + incidents.get(position).getClazz() + "</small>" ;
-
+            text = "<font color='#0000FF'><small><b> (" + Math.abs(hours) + "ч." + Math.abs(min) + "мин." + " ) </b></font></small>";
+            if (hours < 5) text = "<font color='#FF8C00'><small><b> (" + Math.abs(hours) + "ч." + Math.abs(min) + "мин." + ") </b></font></small>";
+            if (min < 0) text = "<font color='#EE0000'><small><b> (" + Math.abs(hours) + "ч." + Math.abs(min) + "мин." + ") </b></font></small>";
+        }
+        item = incidents.get(position).getTypeincident() + incidents.get(position).getN_incident() + text + "<em>до <u>" + df.format(incidents.get(position).getDecisiontime()) + " </em></u>" + incidents.get(position).getAddress() + " " + incidents.get(position).getRoom() + " <small>("  + incidents.get(position).getClazz() + ")</small>";
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()) .inflate(android.R.layout.simple_list_item_2, null);
         }
         TextView tv = convertView.findViewById(android.R.id.text1);
         tv.setText(Html.fromHtml(item));
-        tv.setTextColor( Color.BLUE);
-        if (hours < 5)  tv.setTextColor(Color.parseColor("#FF8C00"));
-        if (min < 0)    tv.setTextColor(Color.RED);
         if (incidents.get(position).getClazz().contains("ЮЛ"))  tv.setTextColor(Color.parseColor("#D2691E"));
         return convertView;
     }

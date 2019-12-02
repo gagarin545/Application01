@@ -9,7 +9,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiFactory {
     public static Api createApi() {
         OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
                 .build();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.API_BASE_URL)

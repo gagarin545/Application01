@@ -24,6 +24,7 @@ public class ViewTestTest {
         //String incident = "9633720";
         //String incident = "9666819";
         String incident = "9678887";
+     //   String incident = "9681746";
 
         Call<ViewTest> result = api.gettest( incident);
         try {

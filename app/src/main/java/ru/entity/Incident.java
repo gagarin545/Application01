@@ -189,18 +189,18 @@ public class Incident implements Parcelable {
         return  "<font COLOR='#33B5E5'><b>Логин: </b></font>" + service + "<br>" +
                 "<font COLOR='#33B5E5'><b>Заявлено: </b></font>" + declared  + "<br>" +
                 "<font COLOR='#33B5E5'><b>КС: </b></font>" + term + "<br>" +
+                "<font COLOR='#33B5E5'><b>Назначен: </b></font>" + worker.getName() +
                 "<font COLOR='#33B5E5'><b>КС (sla): </b></font>" + controltermsla + "<br>" +
                 "<font COLOR='#33B5E5'><b>КС задачи: </b></font>" + controltermtask + "<br>" +
                 "<font COLOR='#33B5E5'><b>Кл.: </b></font>" + clazz + "<br>" +
-                "<font COLOR='#33B5E5'><b>Повтор: </b></font>" + repet + "<br>" +
-                "<font COLOR='#33B5E5'><b>Доходность: </b></font>" + yield + "<br>" +
                 "<font COLOR='#33B5E5'><b>Интервал c: </b></font>" + format.format(new Date(decisiontime)) + "<br>" +
-                "<font COLOR='#33B5E5'><b>Имя: </b></font>" + nameclient + "<br>" +
                 "<font COLOR='#33B5E5'><b>Уровень облуживания: </b></font>" + labelofservice + "<br>" +
                 "<font COLOR='#33B5E5'><b>Адрес: </b></font>" + address + " " + room + "<br>" +
                 "<font COLOR='#33B5E5'><b>Телефон: </b></font>" + phone + "<br>" +
                 "<font COLOR='#33B5E5'><b>Тех.данные: </b></font>" + techdata + "<br>" +
                 "<font COLOR='#33B5E5'><b>Комментарии: </b></font>" + comment + "<br>" +
-                "<font COLOR='#33B5E5'><b>Назначен: </b></font>" + worker.getName();
+                "<font COLOR='#33B5E5'><b>Повтор: </b></font>" + repet + "<br>" +
+                "<font COLOR='#33B5E5'><b>Имя: </b></font>" + nameclient + "<br>" +
+                "<font COLOR='#33B5E5'><b>Доходность: </b></font>" + yield + "<br>" ;
     }
 }

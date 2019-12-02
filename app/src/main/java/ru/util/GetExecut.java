@@ -1,5 +1,7 @@
 package ru.util;
 
+import android.content.Context;
+
 import com.github.mikephil.charting.data.BarData;
 
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import ru.entity.Result;
 import ru.entity.ViewTest;
 import ru.entity.WorkerResult;
 import ru.entity.Workers;
+import ru.service.GetDivision;
 import ru.service.GetIncident;
 import ru.service.GetIncidentListDay;
 import ru.service.GetIncidentRepet;
@@ -35,11 +38,13 @@ public class GetExecut {
     private static List <Incident> incidents;
     public GetExecut(List<Incident> incidents) {        GetExecut.incidents = incidents;    }
 
-    public static Workers getWorker() {
+    public static Workers getWorker(Context context) {
         Workers workers = null;
         Future<Workers> futurework = executor.submit( new GetWorker(  Imei).task);
         try {
             workers = futurework.get();
+            if( workers == null)
+                new GetDivision( context).getdivision();
             change = false;
         } catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
         return workers;
