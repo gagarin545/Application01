@@ -26,7 +26,7 @@ import ru.adapter.MyAdapterIncidentList;
 import ru.adapter.MyAdapterIncidentRepet;
 import ru.entity.Incident;
 import ru.entity.Workers;
-import ru.service.GetDivision;
+
 import static ru.Api.Constants.Imei;
 import static ru.Api.Constants.change;
 import static ru.util.GetExecut.getIncident;
@@ -52,11 +52,12 @@ public class MainActivity extends AppCompatActivity {
         lv = findViewById(R.id.listView1);
         Imei = getImei();
         workers = getWorker( this);
-    //    Log.e("DEbug", "--" + workers.getName());
         if(workers != null)
             setTitle(Html.fromHtml("<small><b>" + String.format(getString(R.string.app_name), workers.getName()) + "</font>"));
-        else
-            new GetDivision( this).getdivision();
+        else {
+            Intent intent = new Intent( this, DivisionsActivity.class);
+            startActivity(intent);
+        }
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick (AdapterView < ? > parent, View v, int position, long id){
@@ -69,20 +70,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-   }
    @Override
    protected void onResume() {
        super.onResume();
        if( change) getWorker(this);
    }
-   @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.main, menu);
@@ -108,7 +100,8 @@ public class MainActivity extends AppCompatActivity {
                 lv.setAdapter(chartDataAdapter);
                 return true;
             case R.id.Setting:
-                new GetDivision( this).getdivision();
+                Intent intent = new Intent( this, DivisionsActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.Nday:
                 incidents =  getIncidentNday(workers.getIddivision());

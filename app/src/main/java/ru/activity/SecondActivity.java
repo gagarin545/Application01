@@ -27,12 +27,8 @@ public class SecondActivity extends AppCompatActivity  {
         tv = findViewById(R.id.TV1);
 
         String incident = getIntent().getStringExtra("incident");
-        if( incident == null ) {
-            String nnn = getTest(getIntent().getStringExtra( "test" ));
-
-            if(nnn != null )
+        if( incident == null )
             tv.setText(Html.fromHtml(getTest(getIntent().getStringExtra( "test" ))));
-        }
         else {
             tv.setText(Html.fromHtml("<font COLOR='#33B5E5'><b>Инцидент: </b></font>"));
             Log.e("DEbug", "->" + incident);
@@ -55,10 +51,6 @@ public class SecondActivity extends AppCompatActivity  {
         super.onStart();
         if(MainActivity.workers.getName() != null)
             setTitle(Html.fromHtml("<small><b>" + String.format(getString(R.string.app_name), MainActivity.workers.getName()) + "</font>"));
-    }
-    @Override
-    protected void onStop() {
-        super.onStop();
     }
 
 }
