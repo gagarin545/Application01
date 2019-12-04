@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.activity.SecondActivity">
+    tools:context="ru.activity.TestActivity">
 
     <ScrollView
         android:id="@+id/sv2"
@@ -13,7 +13,7 @@
         tools:ignore="MissingConstraints,UselessParent">
 
         <TextView
-            android:id="@+id/TV1"
+            android:id="@+id/test_TV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -21,5 +21,4 @@
             android:scrollbars="horizontal"
             tools:ignore="HardcodedText,RtlHardcoded" />
     </ScrollView>
-
-</android.support.constraint.ConstraintLayout>
+</android.support.design.widget.CoordinatorLayout>

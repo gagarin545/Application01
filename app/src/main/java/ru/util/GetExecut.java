@@ -34,8 +34,8 @@ import ru.service.SetDivisions;
 import static ru.Api.Constants.Imei;
 
 public class GetExecut {
-    private static int potok = 3;
-    private static ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(potok);
+    private static int potok = 2;
+    public static ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(potok);
     private static Future<List<Incident>> future;
     private static ArrayList<BarData> list = new ArrayList<>();
     private static BarData date;
@@ -111,7 +111,7 @@ public class GetExecut {
         Future <ViewTest> future_reswork = executor.submit((new GetTest( incident)).task);
         try {
             viewTest = future_reswork.get();
-        } catch (ExecutionException | InterruptedException e) {            e.printStackTrace(); }
+        } catch (ExecutionException | InterruptedException e) {       System.out.println("Error");     e.printStackTrace(); }
         if( viewTest == null)
             return " ";
         else
