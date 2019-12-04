@@ -11,16 +11,13 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.example.application01.R;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import ru.adapter.MyAdapterDivision;
 import ru.entity.Division;
-
 import static ru.activity.MainActivity.workers;
 import static ru.util.GetExecut.getDivision;
 import static ru.util.GetExecut.setDivision;

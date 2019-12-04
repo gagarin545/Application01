@@ -8,9 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-
 import com.example.application01.R;
-
 import ru.entity.Division;
 
 import static ru.activity.DivisionsActivity.divisions;

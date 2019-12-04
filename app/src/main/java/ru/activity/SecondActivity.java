@@ -7,17 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
+import android.text.util.Linkify;
 import android.widget.TextView;
-
 import com.example.application01.R;
-
 import ru.util.CalloutLink;
 
-import static ru.util.GetExecut.getTest;
-
 public class SecondActivity extends AppCompatActivity  {
-    public static TextView tv;
+    private TextView tv;
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +22,13 @@ public class SecondActivity extends AppCompatActivity  {
         tv = findViewById(R.id.TV1);
         String incident = getIntent().getStringExtra("incident");
         SpannableString commentsContent = new SpannableString(incident);
-        commentsContent.setSpan(new CalloutLink(this, Color.parseColor("#4CAF50")), 0, incident.length(), 0);
+        commentsContent.setSpan(new CalloutLink(this), 0, incident.length(), 0);
         tv.setText(Html.fromHtml("<font COLOR='#33B5E5'><b>Инцидент: </b></font>"));
         tv.setMovementMethod(LinkMovementMethod.getInstance());
         tv.append(commentsContent );
         tv.append("\n");
         tv.append(Html.fromHtml(getIntent().getStringExtra("word")));
+        Linkify.addLinks(tv, Linkify.PHONE_NUMBERS);
 
     }
 

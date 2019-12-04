@@ -175,7 +175,7 @@ public class Incident implements Parcelable {
     @Override
     public String toString() {
         String term = null;
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm dd.MM.yy");
         if(controlterm != 0) {
             int hours = (int)((getControlterm() - MyAdapterIncident.time.getTime()) / 3600000L);
             int min = (int) (((getControlterm() - MyAdapterIncident.time.getTime()) - (long) (hours) * 3600000L) / 60000);
@@ -196,7 +196,7 @@ public class Incident implements Parcelable {
                 "<font COLOR='#33B5E5'><b>Интервал c: </b></font>" + format.format(new Date(decisiontime)) + "<br>" +
                 "<font COLOR='#33B5E5'><b>Уровень облуживания: </b></font>" + labelofservice + "<br>" +
                 "<font COLOR='#33B5E5'><b>Адрес: </b></font>" + address + " " + room + "<br>" +
-                "<font COLOR='#33B5E5'><b>Телефон: </b></font>" + phone + "<br>" +
+                "<font COLOR='#33B5E5'><b>Телефон: </b></font>+7" + phone + "<br>" +
                 "<font COLOR='#33B5E5'><b>Тех.данные: </b></font>" + techdata + "<br>" +
                 "<font COLOR='#33B5E5'><b>Комментарии: </b></font>" + comment + "<br>" +
                 "<font COLOR='#33B5E5'><b>Повтор: </b></font>" + repet + "<br>" +

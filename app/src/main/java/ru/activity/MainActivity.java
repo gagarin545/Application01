@@ -26,7 +26,6 @@ import ru.adapter.MyAdapterIncidentList;
 import ru.adapter.MyAdapterIncidentRepet;
 import ru.entity.Incident;
 import ru.entity.Workers;
-
 import static ru.Api.Constants.Imei;
 import static ru.Api.Constants.change;
 import static ru.util.GetExecut.getIncident;
@@ -65,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent( MainActivity.this, SecondActivity.class);
                 intent.putExtra("word", incidents.get(position).toString());
                 intent.putExtra("incident", String.valueOf(incidents.get(position).getN_incident()));
-                Log.e("DEbug", String.valueOf(incidents.get(position).getN_incident() ));
+              //  Log.e("DEbug", String.valueOf(incidents.get(position).getN_incident() ));
                 startActivity(intent);
             }
         });

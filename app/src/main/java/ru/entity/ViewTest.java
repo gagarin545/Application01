@@ -234,8 +234,8 @@ public class ViewTest  implements Parcelable {
                     color + "Сигнал зат." + b  + String.format("%.2f  %.2f",s_Attenuation_in, s_Attenuation_out) + "<br>" +
                     color + "Power" +  b + String.format("%.2f %.2f",power_in,power_out) + "<br>" +
                     color + "Пред.скорость" + b + "\t" + String.format("%.2f\t%.2f",v_previous_in, v_previous_out ) + "<br>" +
-                    color + "Тек.скорость" + b + "\t" + String.format("%.2f\t%.2f", v_current_in,v_current_out) + "<br>" +
-                    color + "Max скорость" + b + "\t" + String.format("%.2f\t%.2f",v_max_in,v_max_out) + "<br>"+
+                    color + "Тек. скорость" + b + "\t" + String.format("%.2f\t%.2f", v_current_in,v_current_out) + "<br>" +
+                    color + "Max  скорость" + b + "\t" + String.format("%.2f\t%.2f",v_max_in,v_max_out) + "<br>"+
                     color + "Vlan" + b  + vlans;
         else
             return  color + "логин" + b + service + "<br>" +
